@@ -1,7 +1,49 @@
 [project]
 name = "folioforge"
 version = "0.1.0"
-description = "Add your description here"
+description = "A library wrapping various PDF extraction tools with common workflows and tooling."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+  "pymupdf>=1.26.4",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.0",
+    "ty>=0.0.1a21",
+]
+
+[project.scripts]
+folioforge = "folioforge:main"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 140
+
+[tool.ruff.lint]
+select = [
+  # isort
+  "I",
+  # pyflakes
+  "F",
+  # pycodestyle
+  "E",
+  "W",
+  # pyupgrade
+  "UP",
+  # flake8-simplify
+  "SIM",
+  # unused-noqa https://docs.astral.sh/ruff/rules/unused-noqa/
+  "RUF100",
+  # flake8-bugbear checks are pretty useful
+  # https://docs.astral.sh/ruff/rules/#flake8-bugbear-b
+  "B",
+]
+
+ignore = ["SIM108", "SIM102"]
+
+
+[build-system]
+requires=["uv_build>=0.9.0,<0.10.0"]
+build-backend="uv_build"
