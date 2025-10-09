@@ -1,4 +1,4 @@
 from .pdf import PDFPreprocessor
-from .preprocessor import Preprocessor
+from .protocol import Preprocessor
 
 all = [Preprocessor, PDFPreprocessor]

@@ -3,7 +3,8 @@ from pathlib import Path
 
 import pymupdf
 
-from folioforge.preprocessor.preprocessor import DocumentReference, Preprocessor
+from folioforge.models.document import DocumentReference
+from folioforge.preprocessor import Preprocessor
 
 
 class PDFPreprocessor(Preprocessor):
