@@ -338,6 +338,7 @@ source = { editable = "." }
 dependencies = [
     { name = "docling" },
     { name = "pymupdf" },
+    { name = "typer" },
 ]
 
 [package.dev-dependencies]
@@ -351,6 +352,7 @@ dev = [
 requires-dist = [
     { name = "docling", specifier = ">=2.55.1" },
     { name = "pymupdf", specifier = ">=1.26.4" },
+    { name = "typer", specifier = ">=0.19.2" },
 ]
 
 [package.metadata.requires-dev]

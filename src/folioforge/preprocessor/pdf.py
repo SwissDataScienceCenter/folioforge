@@ -4,15 +4,15 @@ from pathlib import Path
 import pymupdf
 
 from folioforge.models.document import DocumentEntry, DocumentReference
-from folioforge.preprocessor import Preprocessor
+from folioforge.preprocessor.protocol import Preprocessor
 
 
 class PDFPreprocessor(Preprocessor):
     name = "pdf-preprocessor"
 
-    def __init__(self, outdir: Path, filter_non_pdfs: bool = True) -> None:
+    def __init__(self, outdir: Path | None = None, filter_non_pdfs: bool = True) -> None:
         if outdir is None:
-            outdir = tempfile.mkdtemp(prefix=self.name)
+            outdir = Path(tempfile.mkdtemp(prefix=self.name))
 
         self.outdir = outdir
         self.filter_non_pdfs = filter_non_pdfs
@@ -30,7 +30,7 @@ class PDFPreprocessor(Preprocessor):
         for page_num, page in enumerate(pdf.pages()):
             image = page.get_pixmap(dpi=300, alpha=False)
 
-            out_path = Path(f"/page{page_num}.png")
+            out_path = pages_dir / f"page{page_num}.png"
             image.save(out_path)
             items.append(DocumentEntry(out_path, [], None))
         return DocumentReference(path=document.path, items=items, converted=None)
