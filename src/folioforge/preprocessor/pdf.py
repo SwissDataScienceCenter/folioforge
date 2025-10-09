@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pymupdf
 
-from folioforge.models.document import DocumentReference
+from folioforge.models.document import DocumentEntry, DocumentReference
 from folioforge.preprocessor import Preprocessor
 
 
@@ -17,24 +17,20 @@ class PDFPreprocessor(Preprocessor):
         self.outdir = outdir
         self.filter_non_pdfs = filter_non_pdfs
 
-    def process(self, documents: list[DocumentReference]) -> list[DocumentReference]:
-        new_documents = []
+    def process(self, document: DocumentReference) -> DocumentReference | None:
+        if document.path.suffix != ".pdf" or len(document.items) > 0:
+            if self.filter_non_pdfs:
+                return None
+            return document
 
-        for doc in documents:
-            if doc.path.suffix != ".pdf" or len(doc.items) > 0:
-                if not self.filter_non_pdfs:
-                    new_documents.append(doc)
-                continue
+        pdf = pymupdf.open(document.path)
+        pages_dir = Path(f"{self.outdir}/{document.path.stem}")
+        pages_dir.mkdir(parents=True, exist_ok=True)
+        items = []
+        for page_num, page in enumerate(pdf.pages()):
+            image = page.get_pixmap(dpi=300, alpha=False)
 
-            pdf = pymupdf.open(doc.path)
-            pages_dir = Path(f"{self.outdir}/{doc.path.stem}")
-            pages_dir.mkdir(parents=True, exist_ok=True)
-            for page_num, page in enumerate(pdf.pages()):
-                image = page.get_pixmap(dpi=300, alpha=False)
-
-                out_path = Path(f"/page{page_num}.png")
-                image.save(out_path)
-                doc.items.append(out_path)
-            new_documents.append(doc)
-
-        return new_documents
+            out_path = Path(f"/page{page_num}.png")
+            image.save(out_path)
+            items.append(DocumentEntry(out_path, [], None))
+        return DocumentReference(path=document.path, items=items, converted=None)

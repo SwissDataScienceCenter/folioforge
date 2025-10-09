@@ -5,6 +5,7 @@ description = "A library wrapping various PDF extraction tools with common workf
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+  "docling>=2.55.1",
   "pymupdf>=1.26.4",
 ]
 

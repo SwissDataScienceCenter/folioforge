@@ -1,27 +1,40 @@
 from dataclasses import dataclass
-from enum import IntEnum
 from pathlib import Path
-from typing import TypeVar
 
-T = TypeVar("T", bound=IntEnum)
+from folioforge.models.labels import Label
 
 
 @dataclass
-class Area[T]:
-    bbox: tuple[float, float, float, float]
-    label: T
+class BoundingBox:
+    x0: float
+    y0: float
+    x1: float
+    y1: float
+
+
+@dataclass
+class Area:
+    """An area is a detected region in a document."""
+
+    bbox: BoundingBox
+    label: Label
     confidence: float
     converted: str | None
 
 
 @dataclass
-class Layout[T]:
-    areas: list[Area[T]]
+class DocumentEntry:
+    """Represents a single entry in a document (e.g. page)"""
+
+    path: Path
+    layout: list[Area]
+    converted: str | None
 
 
 @dataclass
-class DocumentReference[T]:
+class DocumentReference:
+    """Represents a full document getting converted."""
+
     path: Path
-    items: list[Path]
-    layout: Layout[T]
+    items: list[DocumentEntry]
     converted: str | None

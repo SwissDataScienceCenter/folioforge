@@ -1,7 +1,7 @@
 from typing import Protocol
 
-from folioforge.models.document import DocumentReference
+from folioforge.models.document import DocumentEntry
 
 
 class Extractor(Protocol):
-    def extract(self, documents: list[DocumentReference]): ...
+    def extract(self, entry: DocumentEntry) -> DocumentEntry: ...
