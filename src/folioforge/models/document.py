@@ -23,6 +23,44 @@ class Area:
 
 
 @dataclass
+class TableCell:
+    bbox: BoundingBox | None
+    row_span: int
+    col_span: int
+    start_row: int
+    end_row: int
+    start_col: int
+    end_col: int
+    converted: str | None
+
+
+@dataclass
+class Table(Area):
+    headers: list[TableCell]
+    cells: list[TableCell]
+
+
+@dataclass
+class ListItem(Area):
+    pass
+
+
+@dataclass
+class Heading(Area):
+    level: int  # same as html heading levels (1, 2, ...)
+
+
+@dataclass
+class Image(Area):
+    pass
+
+
+@dataclass
+class Text(Area):
+    pass
+
+
+@dataclass
 class DocumentEntry:
     """Represents a single entry in a document (e.g. page)"""
 

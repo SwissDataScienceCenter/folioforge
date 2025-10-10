@@ -1,4 +1,6 @@
 from pathlib import Path
+from typing import TypeVar
+from folioforge.output.protocol import OutputGenerator
 from folioforge.pipeline.protocol import PipelineExecutor
 from folioforge.preprocessor.protocol import Preprocessor
 from folioforge.extraction.protocol import Extractor
@@ -11,22 +13,38 @@ def expand(r: DocumentReference) -> list[tuple[Path, DocumentEntry]]:
     return [(r.path, i) for i in r.items]
 
 
-class DaskPipelineExecutor(PipelineExecutor):
+T = TypeVar("T")
+
+
+class DaskPipelineExecutor[T](PipelineExecutor):
     def __init__(
-        self, preprocessors: list[Preprocessor], extractor: Extractor, n_workers: int = 4, threads_per_worker: int = 1, partitions: int = 2
+        self,
+        preprocessors: list[Preprocessor],
+        extractor: Extractor,
+        output: OutputGenerator[T],
+        n_workers: int = 4,
+        threads_per_worker: int = 1,
+        partitions: int = 2,
     ) -> None:
         self.preprocessors = preprocessors
         self.extractor = extractor
+        self.output = output
         self.n_workers = n_workers
         self.threads_per_worker = threads_per_worker
         self.partitions = partitions
 
     @classmethod
     def setup(
-        cls, preprocessors: list[Preprocessor], extractor: Extractor, n_workers: int = 4, threads_per_worker: int = 1, partitions: int = 2
+        cls,
+        preprocessors: list[Preprocessor],
+        extractor: Extractor,
+        output: OutputGenerator[T],
+        n_workers: int = 4,
+        threads_per_worker: int = 1,
+        partitions: int = 2,
     ) -> "DaskPipelineExecutor":
         return DaskPipelineExecutor(
-            preprocessors, extractor, n_workers=n_workers, threads_per_worker=threads_per_worker, partitions=partitions
+            preprocessors, extractor, output, n_workers=n_workers, threads_per_worker=threads_per_worker, partitions=partitions
         )
 
     def extract(self, entry: tuple[Path, DocumentEntry]) -> tuple[Path, DocumentEntry]:
@@ -47,4 +65,4 @@ class DaskPipelineExecutor(PipelineExecutor):
             lambda e: DocumentReference(e[0], [i[1] for i in e[1]], "\n\n".join(i[1].converted or "" for i in e[1]))
         )
         result = references.compute(retries=10)
-        return result
+        return self.output.convert(result)

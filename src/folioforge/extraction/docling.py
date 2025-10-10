@@ -1,8 +1,10 @@
+from typing import cast
 from docling.document_converter import DocumentConverter
 from docling_core.types.doc.labels import DocItemLabel
+from docling.datamodel.base_models import Table as DoclingTable
 
 from folioforge.extraction.protocol import Extractor
-from folioforge.models.document import Area, BoundingBox, DocumentEntry
+from folioforge.models.document import Area, Table, ListItem, Heading, Image, BoundingBox, DocumentEntry, TableCell
 from folioforge.models.labels import Label
 
 
@@ -39,12 +41,48 @@ class DoclingExtractor(Extractor):
         result = next(self.converter.convert_all(source=[entry.path]))
         for unit in result.assembled.elements:
             bbox = unit.cluster.bbox
-            area = Area(
-                bbox=BoundingBox(bbox.l, bbox.t, bbox.r, bbox.b),
-                label=self.__map_label(unit.label),
-                confidence=unit.cluster.confidence,
-                converted=unit.text,
-            )
+            label = self.__map_label(unit.label)
+            bbox = BoundingBox(bbox.l, bbox.t, bbox.r, bbox.b)
+            area: Area
+            match label:
+                case Label.TABLE:
+                    table = cast(DoclingTable, unit)
+                    headers = []
+                    cells = []
+                    for c in table.table_cells:
+                        cell_bbox = None
+                        if c.bbox:
+                            cell_bbox = BoundingBox(c.bbox.l, c.bbox.t, c.bbox.r, c.bbox.b)
+                        cell = TableCell(
+                            bbox=cell_bbox,
+                            row_span=c.row_span,
+                            col_span=c.col_span,
+                            start_row=c.start_col_offset_idx,
+                            end_row=c.end_row_offset_idx,
+                            start_col=c.start_col_offset_idx,
+                            end_col=c.end_col_offset_idx,
+                            converted=c.text,
+                        )
+                        if c.column_header:
+                            headers.append(cell)
+                        else:
+                            cells.append(cell)
+                    area = Table(
+                        bbox=bbox, label=Label.TABLE, confidence=unit.cluster.confidence, headers=headers, cells=cells, converted=None
+                    )
+                case Label.IMAGE:
+                    area = Image(bbox=bbox, label=label, confidence=unit.cluster.confidence, converted=unit.text)
+                case Label.TITLE:
+                    area = Heading(level=1, bbox=bbox, label=label, confidence=unit.cluster.confidence, converted=unit.text)
+                case Label.SECTION_HEADER:
+                    area = Heading(level=2, bbox=bbox, label=label, confidence=unit.cluster.confidence, converted=unit.text)
+                case _:
+                    area = Area(
+                        bbox=bbox,
+                        label=label,
+                        confidence=unit.cluster.confidence,
+                        converted=unit.text,
+                    )
             entry.layout.append(area)
         entry.converted = result.document.export_to_markdown()
         return entry

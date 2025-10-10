@@ -2,6 +2,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Annotated
 
+from folioforge.output.passthrough import PassthroughGenerator
 from folioforge.pipeline.dask import DaskPipelineExecutor
 import typer
 
@@ -14,9 +15,9 @@ app = typer.Typer()
 
 @app.command()
 def main(paths: Annotated[list[Path], typer.Argument()]):
-    # pipeline = SimplePipelineExecutor.setup(preprocessors=[PDFPreprocessor()], extractor=DoclingExtractor())
+    pipeline = SimplePipelineExecutor.setup(preprocessors=[PDFPreprocessor()], extractor=DoclingExtractor(), output=PassthroughGenerator())
 
-    pipeline = DaskPipelineExecutor.setup(preprocessors=[PDFPreprocessor()], extractor=DoclingExtractor())
+    # pipeline = DaskPipelineExecutor.setup(preprocessors=[PDFPreprocessor()], extractor=DoclingExtractor())
     result = pipeline.execute(paths)
     for r in result:
-        print(r.converted)
+        print(r)

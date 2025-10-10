@@ -3,12 +3,14 @@ from typing import Protocol, TypeVar
 
 from folioforge.extraction.protocol import Extractor
 from folioforge.models.document import DocumentReference
+from folioforge.output.protocol import OutputGenerator
 from folioforge.preprocessor.protocol import Preprocessor
 
 T = TypeVar("T", bound="PipelineExecutor")
+P = TypeVar("P")
 
 
-class PipelineExecutor(Protocol):
+class PipelineExecutor[P](Protocol):
     @classmethod
-    def setup(cls: type[T], preprocessors: list[Preprocessor], extractors: list[Extractor]) -> T: ...
-    def execute(self, paths: list[Path]) -> list[DocumentReference]: ...
+    def setup(cls: type[T], preprocessors: list[Preprocessor], extractors: list[Extractor], output: OutputGenerator[P]) -> T: ...
+    def execute(self, paths: list[Path]) -> list[P]: ...
