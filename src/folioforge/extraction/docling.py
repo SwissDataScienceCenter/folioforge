@@ -46,4 +46,5 @@ class DoclingExtractor(Extractor):
                 converted=unit.text,
             )
             entry.layout.append(area)
+        entry.converted = result.document.export_to_markdown()
         return entry

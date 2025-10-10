@@ -22,4 +22,5 @@ class SimplePipelineExecutor(PipelineExecutor):
             references = list(filter(None, map(processor.process, references)))
         for ref in references:
             ref.items = list(map(self.extractor.extract, ref.items))
+            ref.converted = "\n\n".join(i.converted or "" for i in ref.items)
         return references
