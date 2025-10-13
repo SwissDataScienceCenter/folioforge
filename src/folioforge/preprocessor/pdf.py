@@ -32,5 +32,5 @@ class PDFPreprocessor(Preprocessor):
 
             out_path = pages_dir / f"page{page_num}.png"
             image.save(out_path)
-            items.append(DocumentEntry(out_path, [], None))
+            items.append(DocumentEntry(path=out_path, layout=[], converted=None))
         return DocumentReference(path=document.path, items=items, converted=None)

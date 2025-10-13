@@ -54,7 +54,9 @@ class DaskPipelineExecutor[T](PipelineExecutor):
 
     def execute(self, paths: list[Path]) -> T:
         Client(n_workers=self.n_workers, threads_per_worker=self.threads_per_worker)
-        references = db.from_sequence([DocumentReference(path, [], None) for path in paths], npartitions=self.partitions)
+        references = db.from_sequence(
+            [DocumentReference(path=path, items=[], converted=None) for path in paths], npartitions=self.partitions
+        )
 
         for processor in self.preprocessors:
             references = db.map(processor.process, references)
@@ -64,7 +66,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         entries = db.map(self.extract, entries)
 
         references = entries.groupby(lambda e: e[0]).map(
-            lambda e: DocumentReference(e[0], [i[1] for i in e[1]], "\n\n".join(i[1].converted or "" for i in e[1]))
+            lambda e: DocumentReference(path=e[0], items=[i[1] for i in e[1]], converted="\n\n".join(i[1].converted or "" for i in e[1]))
         )
         result = cast(list[DocumentReference], references.compute())
         return self.output.convert(result)

@@ -1,19 +1,18 @@
-from dataclasses import dataclass
 from pathlib import Path
+
+from pydantic import BaseModel, field_serializer
 
 from folioforge.models.labels import Label
 
 
-@dataclass
-class BoundingBox:
+class BoundingBox(BaseModel):
     x0: float
     y0: float
     x1: float
     y1: float
 
 
-@dataclass
-class Area:
+class Area(BaseModel):
     """An area is a detected region in a document."""
 
     bbox: BoundingBox
@@ -21,9 +20,12 @@ class Area:
     confidence: float
     converted: str | None
 
+    @field_serializer("label")
+    def serialize_label(self, v) -> str:
+        return v.name
 
-@dataclass
-class TableCell:
+
+class TableCell(BaseModel):
     bbox: BoundingBox | None
     row_span: int
     col_span: int
@@ -34,34 +36,28 @@ class TableCell:
     converted: str | None
 
 
-@dataclass
 class Table(Area):
     headers: list[TableCell]
     cells: list[TableCell]
 
 
-@dataclass
 class ListItem(Area):
     pass
 
 
-@dataclass
 class Heading(Area):
     level: int  # same as html heading levels (1, 2, ...)
 
 
-@dataclass
 class Image(Area):
     pass
 
 
-@dataclass
 class Text(Area):
     pass
 
 
-@dataclass
-class DocumentEntry:
+class DocumentEntry(BaseModel):
     """Represents a single entry in a document (e.g. page)"""
 
     path: Path
@@ -69,8 +65,7 @@ class DocumentEntry:
     converted: str | None
 
 
-@dataclass
-class DocumentReference:
+class DocumentReference(BaseModel):
     """Represents a full document getting converted."""
 
     path: Path

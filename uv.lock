@@ -396,6 +396,7 @@ source = { editable = "." }
 dependencies = [
     { name = "dask", extra = ["distributed"] },
     { name = "docling" },
+    { name = "pydantic" },
     { name = "pymupdf" },
     { name = "typer" },
 ]
@@ -411,6 +412,7 @@ dev = [
 requires-dist = [
     { name = "dask", extras = ["distributed"], specifier = ">=2025.9.1" },
     { name = "docling", specifier = ">=2.55.1" },
+    { name = "pydantic", specifier = ">=2.12.0" },
     { name = "pymupdf", specifier = ">=1.26.4" },
     { name = "typer", specifier = ">=0.19.2" },
 ]

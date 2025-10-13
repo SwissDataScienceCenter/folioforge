@@ -43,7 +43,7 @@ class DoclingExtractor(Extractor):
         for unit in result.assembled.elements:
             bbox = unit.cluster.bbox
             label = self.__map_label(unit.label)
-            bbox = BoundingBox(bbox.l, bbox.t, bbox.r, bbox.b)
+            bbox = BoundingBox(x0=bbox.l, y0=bbox.t, x1=bbox.r, y1=bbox.b)
             area: Area
             match label:
                 case Label.TABLE:
@@ -53,7 +53,7 @@ class DoclingExtractor(Extractor):
                     for c in table.table_cells:
                         cell_bbox = None
                         if c.bbox:
-                            cell_bbox = BoundingBox(c.bbox.l, c.bbox.t, c.bbox.r, c.bbox.b)
+                            cell_bbox = BoundingBox(x0=c.bbox.l, y0=c.bbox.t, x1=c.bbox.r, y1=c.bbox.b)
                         cell = TableCell(
                             bbox=cell_bbox,
                             row_span=c.row_span,

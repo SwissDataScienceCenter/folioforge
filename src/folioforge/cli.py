@@ -2,18 +2,18 @@ from enum import Enum
 from pathlib import Path
 from typing import Annotated
 
-from folioforge.output.json import JsonGenerator
-from folioforge.output.markdown import MarkdownGenerator
-from folioforge.output.protocol import OutputGenerator
-from folioforge.pipeline.dask import DaskPipelineExecutor
-from folioforge.pipeline.protocol import PipelineExecutor
-from folioforge.preprocessor.protocol import Preprocessor
 import typer
 
 from folioforge.extraction.docling import DoclingExtractor
+from folioforge.output.json import JsonGenerator
+from folioforge.output.markdown import MarkdownGenerator
 from folioforge.output.passthrough import PassthroughGenerator
+from folioforge.output.protocol import OutputGenerator
+from folioforge.pipeline.dask import DaskPipelineExecutor
+from folioforge.pipeline.protocol import PipelineExecutor
 from folioforge.pipeline.simple import SimplePipelineExecutor
 from folioforge.preprocessor.pdf import PDFPreprocessor
+from folioforge.preprocessor.protocol import Preprocessor
 
 app = typer.Typer()
 
@@ -37,11 +37,15 @@ class OutputTypes(str, Enum):
     json = "json"
 
 
+def get_preprocessor():
+    return [PreprocessorTypes.pdf]
+
+
 @app.command()
 def main(
     paths: Annotated[list[Path], typer.Argument()],
+    preprocessor: Annotated[list[PreprocessorTypes], typer.Option(default_factory=get_preprocessor)],
     pipeline: PipelineTypes = PipelineTypes.simple,
-    preprocessor: Annotated[list[PreprocessorTypes] | None, typer.Option()] = None,
     extractor: ExtractorTypes = ExtractorTypes.docling,
     output: OutputTypes = OutputTypes.markdown,
 ):
