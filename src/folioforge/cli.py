@@ -1,7 +1,11 @@
 from enum import Enum
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
+from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLODocLayNet
+from folioforge.extraction.ocr.paddle import PaddleOcrExtractor
+from folioforge.extraction.protocol import Extractor
+from folioforge.extraction.two_phase import TwoPhaseExtractor
 import typer
 
 from folioforge.extraction.docling import DoclingExtractor
@@ -29,6 +33,7 @@ class PreprocessorTypes(str, Enum):
 
 class ExtractorTypes(str, Enum):
     docling = "docling"
+    doclayout_yolo = "doclayout_yolo"
 
 
 class OutputTypes(str, Enum):
@@ -63,10 +68,15 @@ def main(
                 case PreprocessorTypes.pdf:
                     preprocessors.append(PDFPreprocessor())
 
-    extractor_cls: type[DoclingExtractor]
+    extractor_cls: type[Extractor]
+    extractor_args: dict[str, Any] = {}
     match extractor:
         case ExtractorTypes.docling:
             extractor_cls = DoclingExtractor
+        case ExtractorTypes.doclayout_yolo:
+            extractor_cls = TwoPhaseExtractor
+            extractor_args["layout_detector"] = DoclayoutYOLODocLayNet()
+            extractor_args["ocr_extractor"] = PaddleOcrExtractor()
 
     output_cls: type[OutputGenerator]
     match output:
@@ -77,7 +87,7 @@ def main(
         case OutputTypes.json:
             output_cls = JsonGenerator
 
-    executor = executor_cls.setup(preprocessors=preprocessors, extractor=extractor_cls(), output=output_cls())
+    executor = executor_cls.setup(preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), output=output_cls())
 
     result = executor.execute(paths)
     for r in result:

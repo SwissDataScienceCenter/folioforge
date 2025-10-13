@@ -1,6 +1,6 @@
 from functools import singledispatchmethod
 
-from folioforge.models.document import DocumentReference, Heading, Image, ListItem, Table, Text
+from folioforge.models.document import Area, DocumentReference, Heading, Image, ListItem, Table, Text
 from folioforge.output.protocol import OutputGenerator
 
 
@@ -42,6 +42,10 @@ class MarkdownGenerator(OutputGenerator[list[str]]):
     def _(self, value: Table) -> str:
         headers = value.headers
         cells = value.cells
+
+        if not cells:
+            return value.converted or ""
+
         cells = sorted(cells, key=lambda h: (h.start_col, h.start_row))
         result = []
         max_len = max(len(c.converted or "") for c in cells)
@@ -61,3 +65,7 @@ class MarkdownGenerator(OutputGenerator[list[str]]):
             current_line += "| " + (cell.converted or "").ljust(max_len + 1)
         result.append(current_line + "|")
         return "\n".join(result)
+
+    @convert_element.register
+    def _(self, value: Area) -> str:
+        return value.converted or ""

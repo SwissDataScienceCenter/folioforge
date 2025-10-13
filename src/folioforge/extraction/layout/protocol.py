@@ -1,5 +1,7 @@
 from typing import Protocol
 
+from folioforge.models.document import DocumentEntry
+
 
 class LayoutDetector(Protocol):
-    pass
+    def detect(self, document: DocumentEntry) -> DocumentEntry: ...
