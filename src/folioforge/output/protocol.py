@@ -1,4 +1,5 @@
 from typing import Protocol, TypeVar
+
 from folioforge.models.document import DocumentReference
 
 T = TypeVar("T")

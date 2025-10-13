@@ -2,7 +2,6 @@ from pathlib import Path
 from typing import Protocol, TypeVar
 
 from folioforge.extraction.protocol import Extractor
-from folioforge.models.document import DocumentReference
 from folioforge.output.protocol import OutputGenerator
 from folioforge.preprocessor.protocol import Preprocessor
 

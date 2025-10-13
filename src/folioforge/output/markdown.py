@@ -1,5 +1,6 @@
 from functools import singledispatchmethod
-from folioforge.models.document import DocumentReference, Text, Image, Heading, ListItem, Table
+
+from folioforge.models.document import DocumentReference, Heading, Image, ListItem, Table, Text
 from folioforge.output.protocol import OutputGenerator
 
 

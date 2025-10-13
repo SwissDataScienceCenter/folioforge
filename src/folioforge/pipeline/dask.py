@@ -1,12 +1,14 @@
 from pathlib import Path
-from typing import TypeVar
+from typing import TypeVar, cast
+
+import dask.bag as db
+from dask.distributed import Client
+
+from folioforge.extraction.protocol import Extractor
+from folioforge.models.document import DocumentEntry, DocumentReference
 from folioforge.output.protocol import OutputGenerator
 from folioforge.pipeline.protocol import PipelineExecutor
 from folioforge.preprocessor.protocol import Preprocessor
-from folioforge.extraction.protocol import Extractor
-from folioforge.models.document import DocumentEntry, DocumentReference
-from dask.distributed import Client
-import dask.bag as db
 
 
 def expand(r: DocumentReference) -> list[tuple[Path, DocumentEntry]]:
@@ -50,7 +52,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
     def extract(self, entry: tuple[Path, DocumentEntry]) -> tuple[Path, DocumentEntry]:
         return (entry[0], self.extractor.extract(entry[1]))
 
-    def execute(self, paths: list[Path]) -> list[DocumentReference]:
+    def execute(self, paths: list[Path]) -> T:
         Client(n_workers=self.n_workers, threads_per_worker=self.threads_per_worker)
         references = db.from_sequence([DocumentReference(path, [], None) for path in paths], npartitions=self.partitions)
 
@@ -64,5 +66,5 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         references = entries.groupby(lambda e: e[0]).map(
             lambda e: DocumentReference(e[0], [i[1] for i in e[1]], "\n\n".join(i[1].converted or "" for i in e[1]))
         )
-        result = references.compute(retries=10)
+        result = cast(list[DocumentReference], references.compute())
         return self.output.convert(result)

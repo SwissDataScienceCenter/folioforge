@@ -1,12 +1,10 @@
-from dataclasses import asdict
 from pathlib import Path
 from typing import Annotated
 
-from folioforge.output.passthrough import PassthroughGenerator
-from folioforge.pipeline.dask import DaskPipelineExecutor
 import typer
 
 from folioforge.extraction.docling import DoclingExtractor
+from folioforge.output.passthrough import PassthroughGenerator
 from folioforge.pipeline.simple import SimplePipelineExecutor
 from folioforge.preprocessor.pdf import PDFPreprocessor
 

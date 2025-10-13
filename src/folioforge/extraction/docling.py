@@ -1,10 +1,11 @@
 from typing import cast
+
+from docling.datamodel.base_models import Table as DoclingTable
 from docling.document_converter import DocumentConverter
 from docling_core.types.doc.labels import DocItemLabel
-from docling.datamodel.base_models import Table as DoclingTable
 
 from folioforge.extraction.protocol import Extractor
-from folioforge.models.document import Area, Table, ListItem, Heading, Image, BoundingBox, DocumentEntry, TableCell
+from folioforge.models.document import Area, BoundingBox, DocumentEntry, Heading, Image, Table, TableCell
 from folioforge.models.labels import Label
 
 

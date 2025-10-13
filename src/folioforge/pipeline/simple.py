@@ -20,7 +20,7 @@ class SimplePipelineExecutor[T](PipelineExecutor):
     def setup(cls, preprocessors: list[Preprocessor], extractor: Extractor, output: OutputGenerator[T]) -> "SimplePipelineExecutor":
         return SimplePipelineExecutor(preprocessors, extractor, output)
 
-    def execute(self, paths: list[Path]) -> list[T]:
+    def execute(self, paths: list[Path]) -> T:
         references = [DocumentReference(path, [], None) for path in paths]
 
         for processor in self.preprocessors:
