@@ -69,3 +69,15 @@ class DoclayoutYOLODocLayNet(LayoutDetector):
             document.layout.append(area)
 
         return document
+
+
+class DoclayoutYOLOD4LA(DoclayoutYOLODocLayNet):
+    repo_id = "juliozhao/DocLayout-YOLO-D4LA-Docsynth300K_pretrained"
+    filename = "doclayout_yolo_d4la_imgsz1600_docsynth_pretrain.pt"
+    imgsz = 1600
+
+
+class DoclayoutYOLODocStructBench(DoclayoutYOLODocLayNet):
+    repo_id = "juliozhao/DocLayout-YOLO-DocStructBench"
+    filename = "doclayout_yolo_docstructbench_imgsz1024.pt"
+    imgsz = 1024
