@@ -1,5 +1,7 @@
 from typing import Protocol
 
+from folioforge.models.document import DocumentEntry
+
 
 class OcrExtractor(Protocol):
-    pass
+    def extract(self, document: DocumentEntry) -> DocumentEntry: ...
