@@ -1,6 +1,7 @@
 from folioforge.extraction.ocr.protocol import OcrExtractor
-from folioforge.models.document import DocumentEntry, Image, Table
+from folioforge.models.document import BoundingBox, DocumentEntry, Image, Table, TableCell
 from folioforge.models.labels import Label
+from numpy import ndarray
 from paddleocr import PaddleOCR, TableStructureRecognition
 import cv2
 
@@ -17,23 +18,62 @@ class PaddleOcrExtractor(OcrExtractor):
             if isinstance(area, Image):
                 continue
             elif isinstance(area, Table):
-                if not area.cells:
-                    # layout detection only detected the whole table, so we do table detection now
-                    # TODO: implement table cell detection and extraction
-                    output = self.ocr.predict(img)
-                    area.converted = " | ".join(output[0]["rec_texts"])
-                for header in area.headers:
-                    if not header.bbox:
-                        continue
-                    output = self.ocr.predict(img[int(header.bbox.y0) : int(header.bbox.y1), int(header.bbox.x0) : int(header.bbox.x1), :])
-                    header.converted = " ".join(output[0]["rec_texts"])
-                for cell in area.cells:
-                    if not cell.bbox:
-                        continue
-                    output = self.ocr.predict(img[int(cell.bbox.y0) : int(cell.bbox.y1), int(cell.bbox.x0) : int(cell.bbox.x1), :])
-                    cell.converted = " ".join(output[0]["rec_texts"])
+                self.extract_table(cropped_img, img, area)
             else:
                 output = self.ocr.ocr(cropped_img)
                 area.converted = " ".join(output[0]["rec_texts"])
-            pass
         return entry
+
+    def extract_table(self, cropped_image: ndarray, full_image: ndarray, table: Table, padding: int = 5) -> None:
+        if not table.cells:
+            # layout detection only detected the whole table, so we do table detection now
+            output = self.table_ocr.predict(cropped_image)[0]
+            bboxes = [
+                BoundingBox(
+                    x0=b[0] + table.bbox.x0 - padding,
+                    y0=b[1] + table.bbox.y0 - padding,
+                    x1=b[4] + table.bbox.x0 + padding,
+                    y1=b[5] + table.bbox.y0 + padding,
+                )
+                for b in output["bbox"]
+            ]
+            structure = output["structure"]
+
+            row = -1
+            col = -1
+            current_cell = None
+            cells = []
+
+            for entry in structure:
+                if entry == "<tr>":
+                    row += 1
+                    col = -1
+                elif entry in ["<td></td>", "<td"]:
+                    col += 1
+                    if current_cell is not None:
+                        cells.append(current_cell)
+                    bbox = bboxes.pop(0)
+                    current_cell = TableCell(
+                        bbox=bbox, start_row=row, start_col=col, row_span=1, col_span=1, end_row=row + 1, end_col=col + 1, converted=None
+                    )
+                elif entry.startswith("colspan"):
+                    if current_cell is not None:
+                        current_cell.col_span = int(entry.split("=")[1].trim('"'))
+                elif entry.startswith("rowspan"):
+                    if current_cell is not None:
+                        current_cell.row_span = int(entry.split("=")[1].trim('"'))
+            if current_cell is not None:
+                cells.append(current_cell)
+            table.headers = [c for c in cells if c.start_row == 0]
+            table.cells = [c for c in cells if c.start_row != 0]
+
+        for header in table.headers:
+            if not header.bbox:
+                continue
+            output = self.ocr.predict(full_image[int(header.bbox.y0) : int(header.bbox.y1), int(header.bbox.x0) : int(header.bbox.x1), :])
+            header.converted = " ".join(output[0]["rec_texts"])
+        for cell in table.cells:
+            if not cell.bbox:
+                continue
+            output = self.ocr.predict(full_image[int(cell.bbox.y0) : int(cell.bbox.y1), int(cell.bbox.x0) : int(cell.bbox.x1), :])
+            cell.converted = " ".join(output[0]["rec_texts"])

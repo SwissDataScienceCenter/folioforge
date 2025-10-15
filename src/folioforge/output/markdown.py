@@ -46,14 +46,20 @@ class MarkdownGenerator(OutputGenerator[list[str]]):
         if not cells:
             return value.converted or ""
 
-        cells = sorted(cells, key=lambda h: (h.start_col, h.start_row))
+        cells = sorted(cells, key=lambda h: (h.start_row, h.start_col))
         result = []
-        max_len = max(len(c.converted or "") for c in cells)
+        num_cols = max(c.end_col for c in headers + cells)
+        max_len = [1] * (num_cols + 1)
+
+        for cell in headers + cells:
+            l = len(cell.converted or "")
+            if l > max_len[cell.start_col]:
+                max_len[cell.start_col] = l
+
         if headers:
             headers = sorted(headers, key=lambda h: (h.start_col, h.start_row))
-            max_len = max(max([len(h.converted or "") for h in headers]), max_len)
-            result.append("| " + "| ".join((h.converted or "").ljust(max_len + 1) for h in headers) + "|")
-            result.append("| " + "| ".join("-" * (max_len + 1) for h in headers) + "|")
+            result.append("| " + "| ".join((h.converted or "").ljust(max_len[h.start_col] + 1) for h in headers) + "|")
+            result.append("| " + " | ".join("-" * (max_len[h.start_col]) for h in headers) + " |")
 
         current_row = cells[0].start_row
         current_line = ""
@@ -62,7 +68,7 @@ class MarkdownGenerator(OutputGenerator[list[str]]):
                 result.append(current_line + "|")
                 current_line = ""
                 current_row = cell.start_row
-            current_line += "| " + (cell.converted or "").ljust(max_len + 1)
+            current_line += "| " + (cell.converted or "").ljust(max_len[cell.start_col] + 1)
         result.append(current_line + "|")
         return "\n".join(result)
 
