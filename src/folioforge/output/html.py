@@ -46,7 +46,7 @@ class HtmlGenerator(OutputGenerator[list[str]]):
 
     @convert_area.register
     def _(self, area: Table) -> str:
-        output = "</ul>\n<table>" if self.in_list else "<table>"
+        output = "</ul>\n<table border='0.5'>" if self.in_list else "<table border='0.5'>"
         self.in_list = False
         if area.headers:
             output += "<thead><tr>" + "".join(f"<th>{h.converted}</th>" for h in area.headers) + "</tr></thead>"
@@ -54,10 +54,10 @@ class HtmlGenerator(OutputGenerator[list[str]]):
         current_row = -1
         cells = sorted(area.cells, key=lambda c: (c.start_row, c.start_col))
         for cell in cells:
-            if cell.start_row != current_row and current_row != -1:
-                output += "</tr><tr>"
-            else:
+            if cell.start_row != current_row and current_row == -1:
                 output += "<tr>"
+            elif cell.start_row != current_row:
+                output += "</tr><tr>"
             output += f"<td colspan={cell.col_span} rowspan={cell.row_span}>{cell.converted}</td>"
             current_row = cell.start_row
         output += "</tr></tbody></table>"

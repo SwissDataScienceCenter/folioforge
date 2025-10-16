@@ -161,6 +161,7 @@ def evaluate(
         html += f"<tr><td><bold>{path.name}</bold></td>"
         for result in evaluation_results.values():
             html += f"<td>{result[row]}</td>"
+        html += f"<td><embed src='{path}' type='application/pdf' width='800' height='600' /></td>"
         html += "</tr>"
     html += "</tbody></table></body></html>"
     with open(output, "w") as f:
