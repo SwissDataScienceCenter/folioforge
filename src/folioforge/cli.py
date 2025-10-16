@@ -9,6 +9,7 @@ from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLOD4LA, Docla
 from folioforge.extraction.ocr.paddle import PaddleOcrExtractor
 from folioforge.extraction.protocol import Extractor
 from folioforge.extraction.two_phase import TwoPhaseExtractor
+from folioforge.output.html import HtmlGenerator
 from folioforge.output.json import JsonGenerator
 from folioforge.output.markdown import MarkdownGenerator
 from folioforge.output.passthrough import PassthroughGenerator
@@ -42,6 +43,7 @@ class OutputTypes(str, Enum):
     passthrough = "passthrough"
     markdown = "markdown"
     json = "json"
+    html = "html"
 
 
 def get_preprocessor():
@@ -49,7 +51,7 @@ def get_preprocessor():
 
 
 @app.command()
-def main(
+def convert(
     paths: Annotated[list[Path], typer.Argument()],
     preprocessor: Annotated[list[PreprocessorTypes], typer.Option(default_factory=get_preprocessor)],
     pipeline: PipelineTypes = PipelineTypes.simple,
@@ -96,9 +98,71 @@ def main(
             output_cls = MarkdownGenerator
         case OutputTypes.json:
             output_cls = JsonGenerator
+        case OutputTypes.html:
+            output_cls = HtmlGenerator
 
     executor = executor_cls.setup(preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), output=output_cls())
 
     result = executor.execute(paths)
     for r in result:
         print(r)
+
+
+def default_evaluation_extractors() -> list[ExtractorTypes]:
+    return list(ExtractorTypes)
+
+
+@app.command()
+def evaluate(
+    paths: Annotated[list[Path], typer.Argument()],
+    preprocessor: Annotated[list[PreprocessorTypes], typer.Option(default_factory=get_preprocessor)],
+    extractors: Annotated[list[ExtractorTypes], typer.Option(default_factory=default_evaluation_extractors)],
+    pipeline: PipelineTypes = PipelineTypes.simple,
+    output: Path = Path("output.html"),
+):
+    evaluation_results = {t: [] for t in extractors}
+
+    preprocessors: list[Preprocessor] = []
+    if preprocessor is not None:
+        for p in preprocessor:
+            match p:
+                case PreprocessorTypes.pdf:
+                    preprocessors.append(PDFPreprocessor())
+
+    for extractor, result in evaluation_results.items():
+        print(f"Evaluating {extractor.value}...")
+        extractor_cls: type[Extractor]
+        extractor_args: dict[str, Any] = {}
+        match extractor:
+            case ExtractorTypes.docling:
+                extractor_cls = DoclingExtractor
+            case ExtractorTypes.doclayout_yolo_doclaynet:
+                extractor_cls = TwoPhaseExtractor
+                extractor_args["layout_detector"] = DoclayoutYOLODocLayNet()
+                extractor_args["ocr_extractor"] = PaddleOcrExtractor()
+            case ExtractorTypes.doclayout_yolo_d4la:
+                extractor_cls = TwoPhaseExtractor
+                extractor_args["layout_detector"] = DoclayoutYOLOD4LA()
+                extractor_args["ocr_extractor"] = PaddleOcrExtractor()
+            case ExtractorTypes.doclayout_yolo_docstructbench:
+                extractor_cls = TwoPhaseExtractor
+                extractor_args["layout_detector"] = DoclayoutYOLODocStructBench()
+                extractor_args["ocr_extractor"] = PaddleOcrExtractor()
+        executor = SimplePipelineExecutor.setup(
+            preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), output=HtmlGenerator(full=False)
+        )
+        result.extend(executor.execute(paths))
+
+    html = '<html><body><table border="1"><thead><tr><th></th>'
+    for extractor in evaluation_results:
+        html += f"<th>{extractor}</th>"
+    html += "</tr></thead><tbody>"
+    for row, path in enumerate(paths):
+        html += f"<tr><td><bold>{path.name}</bold></td>"
+        for result in evaluation_results.values():
+            html += f"<td>{result[row]}</td>"
+        html += "</tr>"
+    html += "</tbody></table></body></html>"
+    with open(output, "w") as f:
+        f.write(html)
+    print(f"Output written to {output}")

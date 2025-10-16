@@ -21,25 +21,36 @@ $ uv add "folioforge @ git+https://github.com/SwissDataScienceCenter/folioforge"
 ### CLI
 
 ```bash
-$ folioforge myfile.pdf
+$ folioforge convert myfile.pdf
 ```
 
 ```
-Usage: folioforge [OPTIONS] PATHS...
+ Usage: folioforge convert [OPTIONS] PATHS...
 
 ╭─ Arguments ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ *    paths      PATHS...  [required]                                                                                                       │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ --preprocessor              [pdf]                                                   [default: (dynamic)]                                   │
-│ --pipeline                  [simple|dask]                                           [default: simple]                                      │
-│ --extractor                 [docling|doclayout_yolo_doclaynet|doclayout_yolo_d4la|  [default: docling]                                     │
-│                             doclayout_yolo_docstructbench]                                                                                 │
-│ --output                    [passthrough|markdown|json]                             [default: markdown]                                    │
-│ --install-completion                                                                Install completion for the current shell.              │
-│ --show-completion                                                                   Show completion for the current shell, to copy it or   │
-│                                                                                     customize the installation.                            │
-│ --help                                                                              Show this message and exit.                            │
+│ --preprocessor        [pdf]                                                     [default: (dynamic)]                                       │
+│ --pipeline            [simple|dask]                                             [default: simple]                                          │
+│ --extractor           [docling|doclayout_yolo_doclaynet|doclayout_yolo_d4la|do  [default: docling]                                         │
+│                       clayout_yolo_docstructbench]                                                                                         │
+│ --output              [passthrough|markdown|json|html]                          [default: markdown]                                        │
+│ --help                                                                          Show this message and exit.                                │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+Usage: folioforge evaluate [OPTIONS] PATHS...
+
+╭─ Arguments ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ *    paths      PATHS...  [required]                                                                                                       │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --preprocessor        [pdf]                                                     [default: (dynamic)]                                       │
+│ --extractors          [docling|doclayout_yolo_doclaynet|doclayout_yolo_d4la|do  [default: (dynamic)]                                       │
+│                       clayout_yolo_docstructbench]                                                                                         │
+│ --pipeline            [simple|dask]                                             [default: simple]                                          │
+│ --output              PATH                                                      [default: output.html]                                     │
+│ --help                                                                          Show this message and exit.                                │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
 ```
