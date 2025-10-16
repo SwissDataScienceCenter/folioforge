@@ -2,13 +2,13 @@ from enum import Enum
 from pathlib import Path
 from typing import Annotated, Any
 
-from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLODocLayNet
-from folioforge.extraction.ocr.paddle import PaddleOcrExtractor
-from folioforge.extraction.protocol import Extractor
-from folioforge.extraction.two_phase import TwoPhaseExtractor
 import typer
 
 from folioforge.extraction.docling import DoclingExtractor
+from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLOD4LA, DoclayoutYOLODocLayNet, DoclayoutYOLODocStructBench
+from folioforge.extraction.ocr.paddle import PaddleOcrExtractor
+from folioforge.extraction.protocol import Extractor
+from folioforge.extraction.two_phase import TwoPhaseExtractor
 from folioforge.output.json import JsonGenerator
 from folioforge.output.markdown import MarkdownGenerator
 from folioforge.output.passthrough import PassthroughGenerator
@@ -33,7 +33,9 @@ class PreprocessorTypes(str, Enum):
 
 class ExtractorTypes(str, Enum):
     docling = "docling"
-    doclayout_yolo = "doclayout_yolo"
+    doclayout_yolo_doclaynet = "doclayout_yolo_doclaynet"
+    doclayout_yolo_d4la = "doclayout_yolo_d4la"
+    doclayout_yolo_docstructbench = "doclayout_yolo_docstructbench"
 
 
 class OutputTypes(str, Enum):
@@ -73,9 +75,17 @@ def main(
     match extractor:
         case ExtractorTypes.docling:
             extractor_cls = DoclingExtractor
-        case ExtractorTypes.doclayout_yolo:
+        case ExtractorTypes.doclayout_yolo_doclaynet:
             extractor_cls = TwoPhaseExtractor
             extractor_args["layout_detector"] = DoclayoutYOLODocLayNet()
+            extractor_args["ocr_extractor"] = PaddleOcrExtractor()
+        case ExtractorTypes.doclayout_yolo_d4la:
+            extractor_cls = TwoPhaseExtractor
+            extractor_args["layout_detector"] = DoclayoutYOLOD4LA()
+            extractor_args["ocr_extractor"] = PaddleOcrExtractor()
+        case ExtractorTypes.doclayout_yolo_docstructbench:
+            extractor_cls = TwoPhaseExtractor
+            extractor_args["layout_detector"] = DoclayoutYOLODocStructBench()
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
 
     output_cls: type[OutputGenerator]

@@ -1,9 +1,9 @@
-from folioforge.extraction.ocr.protocol import OcrExtractor
-from folioforge.models.document import BoundingBox, DocumentEntry, Image, Table, TableCell
-from folioforge.models.labels import Label
+import cv2
 from numpy import ndarray
 from paddleocr import PaddleOCR, TableStructureRecognition
-import cv2
+
+from folioforge.extraction.ocr.protocol import OcrExtractor
+from folioforge.models.document import BoundingBox, DocumentEntry, Image, Table, TableCell
 
 
 class PaddleOcrExtractor(OcrExtractor):
@@ -30,10 +30,10 @@ class PaddleOcrExtractor(OcrExtractor):
             output = self.table_ocr.predict(cropped_image)[0]
             bboxes = [
                 BoundingBox(
-                    x0=b[0] + table.bbox.x0 - padding,
-                    y0=b[1] + table.bbox.y0 - padding,
-                    x1=b[4] + table.bbox.x0 + padding,
-                    y1=b[5] + table.bbox.y0 + padding,
+                    x0=min(b[0], b[2], b[4], b[6]) + table.bbox.x0 - padding,
+                    y0=min(b[1], b[3], b[5], b[7]) + table.bbox.y0 - padding,
+                    x1=max(b[0], b[2], b[4], b[6]) + table.bbox.x0 + padding,
+                    y1=max(b[1], b[3], b[5], b[7]) + table.bbox.y0 + padding,
                 )
                 for b in output["bbox"]
             ]

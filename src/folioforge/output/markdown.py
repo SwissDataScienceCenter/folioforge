@@ -52,9 +52,9 @@ class MarkdownGenerator(OutputGenerator[list[str]]):
         max_len = [1] * (num_cols + 1)
 
         for cell in headers + cells:
-            l = len(cell.converted or "")
-            if l > max_len[cell.start_col]:
-                max_len[cell.start_col] = l
+            text_len = len(cell.converted or "")
+            if text_len > max_len[cell.start_col]:
+                max_len[cell.start_col] = text_len
 
         if headers:
             headers = sorted(headers, key=lambda h: (h.start_col, h.start_row))
