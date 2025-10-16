@@ -10,6 +10,7 @@ class DoclayoutYOLODocLayNet(LayoutDetector):
     repo_id = "juliozhao/DocLayout-YOLO-DocLayNet-Docsynth300K_pretrained"
     filename = "doclayout_yolo_doclaynet_imgsz1120_docsynth_pretrain.pt"
     imgsz = 1120
+    supports_pickle = True
 
     def __init__(self):
         filepath = hf_hub_download(self.repo_id, self.filename)

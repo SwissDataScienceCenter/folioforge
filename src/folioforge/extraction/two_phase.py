@@ -10,6 +10,7 @@ class TwoPhaseExtractor(Extractor):
     def __init__(self, layout_detector: LayoutDetector, ocr_extractor: OcrExtractor) -> None:
         self.layout_detector = layout_detector
         self.ocr_extractor = ocr_extractor
+        self.supports_pickle = self.layout_detector.supports_pickle and self.ocr_extractor.supports_pickle
 
     def extract(self, entry: DocumentEntry) -> DocumentEntry:
         entry = self.layout_detector.detect(entry)

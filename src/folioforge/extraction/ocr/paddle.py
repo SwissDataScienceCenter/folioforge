@@ -7,6 +7,8 @@ from folioforge.models.document import BoundingBox, DocumentEntry, Image, Table,
 
 
 class PaddleOcrExtractor(OcrExtractor):
+    supports_pickle = False
+
     def __init__(self):
         self.ocr = PaddleOCR(use_doc_orientation_classify=False, use_doc_unwarping=False, use_textline_orientation=False)
         self.table_ocr = TableStructureRecognition(model_name="SLANet")

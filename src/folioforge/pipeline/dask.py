@@ -35,6 +35,9 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         self.threads_per_worker = threads_per_worker
         self.partitions = partitions
 
+        if not self.extractor.supports_pickle:
+            raise NotImplementedError(f"The extractor {self.extractor} does not support pickling and can't use dask")
+
     @classmethod
     def setup(
         cls,

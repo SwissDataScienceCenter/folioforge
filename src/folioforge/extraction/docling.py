@@ -10,6 +10,8 @@ from folioforge.models.labels import Label
 
 
 class DoclingExtractor(Extractor):
+    supports_pickle = True
+
     def __init__(self) -> None:
         self.converter = DocumentConverter()
 

@@ -4,4 +4,6 @@ from folioforge.models.document import DocumentEntry
 
 
 class OcrExtractor(Protocol):
+    supports_pickle: bool
+
     def extract(self, document: DocumentEntry) -> DocumentEntry: ...
