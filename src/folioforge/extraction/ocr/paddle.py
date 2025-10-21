@@ -1,3 +1,5 @@
+from itertools import groupby
+
 import cv2
 from numpy import ndarray
 from paddleocr import PaddleOCR, TableStructureRecognition
@@ -15,6 +17,7 @@ class PaddleOcrExtractor(OcrExtractor):
 
     def extract(self, entry: DocumentEntry) -> DocumentEntry:
         img = cv2.imread(str(entry.path))
+        entry.layout = sorted(entry.layout, key=lambda a: (a.bbox.y0, a.bbox.x0))
         for area in entry.layout:
             cropped_img = img[int(area.bbox.y0) : int(area.bbox.y1), int(area.bbox.x0) : int(area.bbox.x1), :]
             if isinstance(area, Image):
@@ -24,6 +27,7 @@ class PaddleOcrExtractor(OcrExtractor):
             else:
                 output = self.ocr.ocr(cropped_img)
                 area.converted = " ".join(output[0]["rec_texts"])
+        entry.converted = "\n".join(area.converted or "" for area in entry.layout)
         return entry
 
     def extract_table(self, cropped_image: ndarray, full_image: ndarray, table: Table, padding: int = 5) -> None:
@@ -79,3 +83,11 @@ class PaddleOcrExtractor(OcrExtractor):
                 continue
             output = self.ocr.predict(full_image[int(cell.bbox.y0) : int(cell.bbox.y1), int(cell.bbox.x0) : int(cell.bbox.x1), :])
             cell.converted = " ".join(output[0]["rec_texts"])
+
+        table.converted = (
+            ",".join(header.converted or "" for header in table.headers)
+            + "\n"
+            + "\n".join(
+                (",".join((cell.converted or "" for cell in group)) for _, group in groupby(table.cells, key=lambda c: c.start_row))
+            )
+        )
