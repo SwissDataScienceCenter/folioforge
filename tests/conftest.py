@@ -1,7 +1,9 @@
+from pathlib import Path
+
+import pytest
+
 from folioforge.models.document import DocumentReference
 from folioforge.preprocessor.pdf import PDFPreprocessor
-import pytest
-from pathlib import Path
 
 
 @pytest.fixture

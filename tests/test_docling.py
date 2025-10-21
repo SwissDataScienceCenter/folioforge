@@ -1,5 +1,5 @@
-from folioforge.models.document import DocumentReference
 from folioforge.extraction.docling import DoclingExtractor
+from folioforge.models.document import DocumentReference
 
 
 def test_docling(document_preprocessed: DocumentReference):

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from folioforge.models.document import DocumentReference
 from folioforge.preprocessor.pdf import PDFPreprocessor
 
