@@ -1,0 +1,38 @@
+name: Test and lint
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: install uv
+        uses: astral-sh/setup-uv@v6
+      - name: setup python
+        run: uv python install
+      - name: install project
+        run: uv sync --locked --all-extras --dev
+      - name: ruff
+        run: uv run ruff check
+      - name: ty
+        run: uv run ty check
+      - name: pytest
+        run: uv run pytest -vvv
+          
+        
