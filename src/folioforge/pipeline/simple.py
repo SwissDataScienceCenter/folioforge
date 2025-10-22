@@ -11,14 +11,14 @@ T = TypeVar("T")
 
 
 class SimplePipelineExecutor[T](PipelineExecutor):
-    def __init__(self, preprocessors: list[Preprocessor], extractor: Extractor, output: OutputGenerator[T]) -> None:
+    def __init__(self, preprocessors: list[Preprocessor], extractor: Extractor, format: OutputGenerator[T]) -> None:
         self.preprocessors = preprocessors
         self.extractor = extractor
-        self.output = output
+        self.format = format
 
     @classmethod
-    def setup(cls, preprocessors: list[Preprocessor], extractor: Extractor, output: OutputGenerator[T]) -> "SimplePipelineExecutor":
-        return SimplePipelineExecutor(preprocessors, extractor, output)
+    def setup(cls, preprocessors: list[Preprocessor], extractor: Extractor, format: OutputGenerator[T]) -> "SimplePipelineExecutor":
+        return SimplePipelineExecutor(preprocessors, extractor, format)
 
     def execute(self, paths: list[Path]) -> T:
         references = [DocumentReference(path=path, items=[], converted=None) for path in paths]
@@ -28,4 +28,4 @@ class SimplePipelineExecutor[T](PipelineExecutor):
         for ref in references:
             ref.items = list(map(self.extractor.extract, ref.items))
             ref.converted = "\n\n".join(i.converted or "" for i in ref.items)
-        return self.output.convert(references)
+        return self.format.convert(references)

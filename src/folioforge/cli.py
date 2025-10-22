@@ -39,7 +39,7 @@ class ExtractorTypes(str, Enum):
     doclayout_yolo_docstructbench = "doclayout_yolo_docstructbench"
 
 
-class OutputTypes(str, Enum):
+class OutputFormat(str, Enum):
     passthrough = "passthrough"
     markdown = "markdown"
     json = "json"
@@ -56,7 +56,7 @@ def convert(
     preprocessor: Annotated[list[PreprocessorTypes], typer.Option(default_factory=get_preprocessor)],
     pipeline: PipelineTypes = PipelineTypes.simple,
     extractor: ExtractorTypes = ExtractorTypes.docling,
-    output: OutputTypes = OutputTypes.markdown,
+    format: OutputFormat = OutputFormat.markdown,
 ):
     executor_cls: type[PipelineExecutor]
     match pipeline:
@@ -90,18 +90,18 @@ def convert(
             extractor_args["layout_detector"] = DoclayoutYOLODocStructBench()
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
 
-    output_cls: type[OutputGenerator]
-    match output:
-        case OutputTypes.passthrough:
-            output_cls = PassthroughGenerator
-        case OutputTypes.markdown:
-            output_cls = MarkdownGenerator
-        case OutputTypes.json:
-            output_cls = JsonGenerator
-        case OutputTypes.html:
-            output_cls = HtmlGenerator
+    format_cls: type[OutputGenerator]
+    match format:
+        case OutputFormat.passthrough:
+            format_cls = PassthroughGenerator
+        case OutputFormat.markdown:
+            format_cls = MarkdownGenerator
+        case OutputFormat.json:
+            format_cls = JsonGenerator
+        case OutputFormat.html:
+            format_cls = HtmlGenerator
 
-    executor = executor_cls.setup(preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), output=output_cls())
+    executor = executor_cls.setup(preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), format=format_cls())
 
     result = executor.execute(paths)
     for r in result:
@@ -149,7 +149,7 @@ def evaluate(
                 extractor_args["layout_detector"] = DoclayoutYOLODocStructBench()
                 extractor_args["ocr_extractor"] = PaddleOcrExtractor()
         executor = SimplePipelineExecutor.setup(
-            preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), output=HtmlGenerator(full=False)
+            preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), format=HtmlGenerator(full=False)
         )
         result.extend(executor.execute(paths))
 

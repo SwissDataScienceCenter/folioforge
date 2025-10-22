@@ -23,14 +23,14 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         self,
         preprocessors: list[Preprocessor],
         extractor: Extractor,
-        output: OutputGenerator[T],
+        format: OutputGenerator[T],
         n_workers: int = 4,
         threads_per_worker: int = 1,
         partitions: int = 2,
     ) -> None:
         self.preprocessors = preprocessors
         self.extractor = extractor
-        self.output = output
+        self.format = format
         self.n_workers = n_workers
         self.threads_per_worker = threads_per_worker
         self.partitions = partitions
@@ -43,13 +43,13 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         cls,
         preprocessors: list[Preprocessor],
         extractor: Extractor,
-        output: OutputGenerator[T],
+        format: OutputGenerator[T],
         n_workers: int = 4,
         threads_per_worker: int = 1,
         partitions: int = 2,
     ) -> "DaskPipelineExecutor":
         return DaskPipelineExecutor(
-            preprocessors, extractor, output, n_workers=n_workers, threads_per_worker=threads_per_worker, partitions=partitions
+            preprocessors, extractor, format, n_workers=n_workers, threads_per_worker=threads_per_worker, partitions=partitions
         )
 
     def extract(self, entry: tuple[Path, DocumentEntry]) -> tuple[Path, DocumentEntry]:
@@ -72,4 +72,4 @@ class DaskPipelineExecutor[T](PipelineExecutor):
             lambda e: DocumentReference(path=e[0], items=[i[1] for i in e[1]], converted="\n\n".join(i[1].converted or "" for i in e[1]))
         )
         result = cast(list[DocumentReference], references.compute())
-        return self.output.convert(result)
+        return self.format.convert(result)

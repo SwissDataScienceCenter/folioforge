@@ -28,7 +28,9 @@ class MarkdownGenerator(OutputGenerator[list[str]]):
 
     @convert_element.register
     def _(self, value: Image) -> str:
-        return "<image>"
+        if not value.path:
+            return "<image>"
+        return f"![image]({value.path.resolve().as_uri()})"
 
     @convert_element.register
     def _(self, value: ListItem) -> str:

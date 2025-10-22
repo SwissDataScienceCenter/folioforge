@@ -42,7 +42,9 @@ class HtmlGenerator(OutputGenerator[list[str]]):
     def _(self, area: Image) -> str:
         prefix = "</ul>" if self.in_list else ""
         self.in_list = False
-        return f"{prefix}\n{{image}}\n"
+        if not area.path:
+            return f"{prefix}\n{{image}}\n"
+        return f"{prefix}\n<img src='{area.path.resolve().as_uri()}' />\n"
 
     @convert_area.register
     def _(self, area: Table) -> str:

@@ -35,7 +35,7 @@ $ folioforge convert myfile.pdf
 │ --pipeline            [simple|dask]                                             [default: simple]                                          │
 │ --extractor           [docling|doclayout_yolo_doclaynet|doclayout_yolo_d4la|do  [default: docling]                                         │
 │                       clayout_yolo_docstructbench]                                                                                         │
-│ --output              [passthrough|markdown|json|html]                          [default: markdown]                                        │
+│ --format              [passthrough|markdown|json|html]                          [default: markdown]                                        │
 │ --help                                                                          Show this message and exit.                                │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
@@ -49,7 +49,7 @@ Usage: folioforge evaluate [OPTIONS] PATHS...
 │ --extractors          [docling|doclayout_yolo_doclaynet|doclayout_yolo_d4la|do  [default: (dynamic)]                                       │
 │                       clayout_yolo_docstructbench]                                                                                         │
 │ --pipeline            [simple|dask]                                             [default: simple]                                          │
-│ --output              PATH                                                      [default: output.html]                                     │
+│ --format              PATH                                                      [default: output.html]                                     │
 │ --help                                                                          Show this message and exit.                                │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 

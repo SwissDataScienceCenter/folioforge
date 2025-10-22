@@ -1,4 +1,5 @@
 from itertools import groupby
+from pathlib import Path
 
 import cv2
 from numpy import ndarray
@@ -18,9 +19,14 @@ class PaddleOcrExtractor(OcrExtractor):
     def extract(self, entry: DocumentEntry) -> DocumentEntry:
         img = cv2.imread(str(entry.path))
         entry.layout = sorted(entry.layout, key=lambda a: (a.bbox.y0, a.bbox.x0))
+        image_index = 0
         for area in entry.layout:
             cropped_img = img[int(area.bbox.y0) : int(area.bbox.y1), int(area.bbox.x0) : int(area.bbox.x1), :]
             if isinstance(area, Image):
+                img_path = Path(entry.path).parent / f"image_{entry.path.stem}_{image_index}.png"
+                cv2.imwrite(str(img_path), cropped_img)
+                area.path = img_path
+                image_index += 1
                 continue
             elif isinstance(area, Table):
                 self.extract_table(cropped_img, img, area)

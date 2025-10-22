@@ -1,5 +1,7 @@
+from pathlib import Path
 from typing import cast
 
+import cv2
 from docling.datamodel.base_models import Table as DoclingTable
 from docling.document_converter import DocumentConverter
 from docling_core.types.doc.labels import DocItemLabel
@@ -42,6 +44,8 @@ class DoclingExtractor(Extractor):
 
     def extract(self, entry: DocumentEntry) -> DocumentEntry:
         result = next(self.converter.convert_all(source=[entry.path]))
+        img = cv2.imread(str(entry.path))
+        image_index = 0
         for unit in result.assembled.elements:
             bbox = unit.cluster.bbox
             label = self.__map_label(unit.label)
@@ -74,7 +78,11 @@ class DoclingExtractor(Extractor):
                         bbox=bbox, label=Label.TABLE, confidence=unit.cluster.confidence, headers=headers, cells=cells, converted=None
                     )
                 case Label.IMAGE:
-                    area = Image(bbox=bbox, label=label, confidence=unit.cluster.confidence, converted=unit.text)
+                    cropped = img[int(bbox.y0) : int(bbox.y1), int(bbox.x0) : int(bbox.x1), :]
+                    img_path = Path(entry.path).parent / f"image_{entry.path.stem}_{image_index}.png"
+                    cv2.imwrite(str(img_path), cropped)
+                    area = Image(bbox=bbox, label=label, confidence=unit.cluster.confidence, converted=unit.text, path=img_path)
+                    image_index += 1
                 case Label.TITLE:
                     area = Heading(level=1, bbox=bbox, label=label, confidence=unit.cluster.confidence, converted=unit.text)
                 case Label.SECTION_HEADER:
