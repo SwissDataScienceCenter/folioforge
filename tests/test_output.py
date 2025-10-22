@@ -97,23 +97,14 @@ def test_json(parsed_document: DocumentReference):
     result = generator.convert([parsed_document])
     content = result[0]
     assert content == (
-        '{"path":".","items":[{"path":".","layout":[{"bbox":{"x0":0.0,"y0":0.0,"x1":1.0,"y1":1.0},"label":"OTHER",'
-        '"confidence":1.0,"converted":"Other"},{"bbox":{"x0":1.0,"y0":0.0,"x1":1.0,"y1":1.0},"label":"TEXT",'
-        '"confidence":1.0,"converted":"Text"},{"bbox":{"x0":1.0,"y0":1.0,"x1":2.0,"y1":2.0},"label":"IMAGE",'
-        '"confidence":1.0,"converted":null},{"bbox":{"x0":2.0,"y0":2.0,"x1":3.0,"y1":3.0},"label":"PAGE_HEADER",'
-        '"confidence":1.0,"converted":"Page Header","level":1},{"bbox":{"x0":3.0,"y0":3.0,"x1":4.0,"y1":4.0},'
-        '"label":"SECTION_HEADER","confidence":1.0,"converted":"Section Header","level":2},'
-        '{"bbox":{"x0":4.0,"y0":4.0,"x1":5.0,"y1":5.0},"label":"LIST_ITEM","confidence":1.0,"converted":"List1"},'
-        '{"bbox":{"x0":5.0,"y0":5.0,"x1":6.0,"y1":6.0},"label":"LIST_ITEM","confidence":1.0,"converted":"List2"},'
-        '{"bbox":{"x0":6.0,"y0":6.0,"x1":7.0,"y1":7.0},"label":"TABLE","confidence":1.0,"converted":"Table",'
-        '"headers":[{"bbox":null,"row_span":1,"col_span":1,"start_row":1,"end_row":2,"start_col":1,"end_col":1,'
-        '"converted":"Header1"},{"bbox":null,"row_span":1,"col_span":1,"start_row":1,"end_row":2,"start_col":2,'
-        '"end_col":2,"converted":"Header2"}],"cells":[{"bbox":null,"row_span":1,"col_span":1,"start_row":2,'
-        '"end_row":3,"start_col":1,"end_col":1,"converted":"Cell11"},{"bbox":null,"row_span":1,"col_span":1,'
-        '"start_row":2,"end_row":3,"start_col":2,"end_col":2,"converted":"Cell12"},{"bbox":null,"row_span":1,'
-        '"col_span":1,"start_row":3,"end_row":4,"start_col":1,"end_col":1,"converted":"Cell21"},'
-        '{"bbox":null,"row_span":1,"col_span":1,"start_row":3,"end_row":4,"start_col":2,"end_col":2,'
-        '"converted":"Cell22"}]}],"converted":null}],"converted":"passthrough text"}'
+        '{"path":".","items":[{"path":".","layout":[{"bbox":{"x0":0.0,"y0":0.0,"x1":1.0,"y1":1.0},"label":"OTHER","confidence":1.0,'
+        '"converted":"Other"},{"bbox":{"x0":1.0,"y0":0.0,"x1":1.0,"y1":1.0},"label":"TEXT","confidence":1.0,"converted":"Text"},'
+        '{"bbox":{"x0":1.0,"y0":1.0,"x1":2.0,"y1":2.0},"label":"IMAGE","confidence":1.0,"converted":null},{"bbox":{"x0":2.0,"y0":2.0,'
+        '"x1":3.0,"y1":3.0},"label":"PAGE_HEADER","confidence":1.0,"converted":"Page Header"},{"bbox":{"x0":3.0,"y0":3.0,"x1":4.0,'
+        '"y1":4.0},"label":"SECTION_HEADER","confidence":1.0,"converted":"Section Header"},{"bbox":{"x0":4.0,"y0":4.0,"x1":5.0,"y1":5.0}'
+        ',"label":"LIST_ITEM","confidence":1.0,"converted":"List1"},{"bbox":{"x0":5.0,"y0":5.0,"x1":6.0,"y1":6.0},"label":"LIST_ITEM",'
+        '"confidence":1.0,"converted":"List2"},{"bbox":{"x0":6.0,"y0":6.0,"x1":7.0,"y1":7.0},"label":"TABLE","confidence":1.0,'
+        '"converted":"Table"}],"converted":null}],"converted":"passthrough text"}'
     )
 
 
