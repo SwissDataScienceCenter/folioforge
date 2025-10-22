@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Protocol
 
 from folioforge.models.document import DocumentReference
@@ -6,4 +7,4 @@ from folioforge.models.document import DocumentReference
 class Preprocessor(Protocol):
     """Preprocesses documents, potentially modifying them or parsing them to individual items."""
 
-    def process(self, document: DocumentReference) -> DocumentReference | None: ...
+    def process(self, document: DocumentReference, outdir: Path) -> DocumentReference | None: ...

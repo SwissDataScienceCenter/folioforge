@@ -1,3 +1,4 @@
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -15,6 +16,7 @@ def pdf_file():
 def document_preprocessed(pdf_file: Path) -> DocumentReference:
     document = DocumentReference(path=pdf_file, items=[], converted=None)
     preprocessor = PDFPreprocessor()
-    document = preprocessor.process(document)
+    outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
+    document = preprocessor.process(document, outdir)
     assert document
     return document

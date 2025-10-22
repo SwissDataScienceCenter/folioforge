@@ -65,7 +65,7 @@ from folioforge.output.markdown import MarkdownGenerator
 
 paths = ["myfile.pdf"]
 
-pipeline = SimplePipelineExecutor.setup(preprocessors=[PDFPreprocessor()], extractor=DoclingExtractor(), output=MarkdownGenerator())
+pipeline = SimplePipelineExecutor.setup(preprocessors=[PDFPreprocessor()], extractor=DoclingExtractor(), format=MarkdownGenerator())
 result = pipeline.execute(paths)
 for r in result:
     print(r)

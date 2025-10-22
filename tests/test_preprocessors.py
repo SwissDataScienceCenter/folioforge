@@ -1,3 +1,4 @@
+import tempfile
 from pathlib import Path
 
 from folioforge.models.document import DocumentReference
@@ -6,7 +7,8 @@ from folioforge.preprocessor.pdf import PDFPreprocessor
 
 def test_pdf_preprocessor(pdf_file: Path):
     preprocessor = PDFPreprocessor()
-    document = preprocessor.process(DocumentReference(path=pdf_file, items=[], converted=None))
+    outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
+    document = preprocessor.process(DocumentReference(path=pdf_file, items=[], converted=None), outdir)
     assert document
     assert document.items
     assert len(document.items) == 1

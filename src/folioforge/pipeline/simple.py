@@ -1,3 +1,5 @@
+import tempfile
+from functools import partial
 from pathlib import Path
 from typing import TypeVar
 
@@ -11,20 +13,25 @@ T = TypeVar("T")
 
 
 class SimplePipelineExecutor[T](PipelineExecutor):
-    def __init__(self, preprocessors: list[Preprocessor], extractor: Extractor, format: OutputGenerator[T]) -> None:
+    def __init__(self, preprocessors: list[Preprocessor], extractor: Extractor, format: OutputGenerator[T], outdir: Path) -> None:
         self.preprocessors = preprocessors
         self.extractor = extractor
         self.format = format
+        self.outdir = outdir
 
     @classmethod
-    def setup(cls, preprocessors: list[Preprocessor], extractor: Extractor, format: OutputGenerator[T]) -> "SimplePipelineExecutor":
-        return SimplePipelineExecutor(preprocessors, extractor, format)
+    def setup(
+        cls, preprocessors: list[Preprocessor], extractor: Extractor, format: OutputGenerator[T], outdir: Path | None = None
+    ) -> "SimplePipelineExecutor":
+        if outdir is None:
+            outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
+        return SimplePipelineExecutor(preprocessors, extractor, format, outdir)
 
     def execute(self, paths: list[Path]) -> T:
         references = [DocumentReference(path=path, items=[], converted=None) for path in paths]
 
         for processor in self.preprocessors:
-            references = list(filter(None, map(processor.process, references)))
+            references = list(filter(None, map(partial(processor.process, outdir=self.outdir), references)))
         for ref in references:
             ref.items = list(map(self.extractor.extract, ref.items))
             ref.converted = "\n\n".join(i.converted or "" for i in ref.items)

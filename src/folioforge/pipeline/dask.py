@@ -1,3 +1,5 @@
+import tempfile
+from functools import partial
 from pathlib import Path
 from typing import TypeVar, cast
 
@@ -24,6 +26,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         preprocessors: list[Preprocessor],
         extractor: Extractor,
         format: OutputGenerator[T],
+        outdir: Path,
         n_workers: int = 4,
         threads_per_worker: int = 1,
         partitions: int = 2,
@@ -31,6 +34,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         self.preprocessors = preprocessors
         self.extractor = extractor
         self.format = format
+        self.outdir = outdir
         self.n_workers = n_workers
         self.threads_per_worker = threads_per_worker
         self.partitions = partitions
@@ -44,12 +48,15 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         preprocessors: list[Preprocessor],
         extractor: Extractor,
         format: OutputGenerator[T],
+        outdir: Path | None = None,
         n_workers: int = 4,
         threads_per_worker: int = 1,
         partitions: int = 2,
     ) -> "DaskPipelineExecutor":
+        if outdir is None:
+            outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
         return DaskPipelineExecutor(
-            preprocessors, extractor, format, n_workers=n_workers, threads_per_worker=threads_per_worker, partitions=partitions
+            preprocessors, extractor, format, outdir, n_workers=n_workers, threads_per_worker=threads_per_worker, partitions=partitions
         )
 
     def extract(self, entry: tuple[Path, DocumentEntry]) -> tuple[Path, DocumentEntry]:
@@ -62,7 +69,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         )
 
         for processor in self.preprocessors:
-            references = db.map(processor.process, references)
+            references = db.map(partial(processor.process, outdir=self.outdir), references)
 
         # turn into bag of document entries
         entries = references.map(expand).flatten().repartition(npartitions=self.partitions)

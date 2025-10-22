@@ -1,4 +1,3 @@
-import tempfile
 from pathlib import Path
 
 import pymupdf
@@ -10,21 +9,17 @@ from folioforge.preprocessor.protocol import Preprocessor
 class PDFPreprocessor(Preprocessor):
     name = "pdf-preprocessor"
 
-    def __init__(self, outdir: Path | None = None, filter_non_pdfs: bool = True) -> None:
-        if outdir is None:
-            outdir = Path(tempfile.mkdtemp(prefix=self.name))
-
-        self.outdir = outdir
+    def __init__(self, filter_non_pdfs: bool = True) -> None:
         self.filter_non_pdfs = filter_non_pdfs
 
-    def process(self, document: DocumentReference) -> DocumentReference | None:
+    def process(self, document: DocumentReference, outdir: Path) -> DocumentReference | None:
         if document.path.suffix != ".pdf" or len(document.items) > 0:
             if self.filter_non_pdfs:
                 return None
             return document
 
         pdf = pymupdf.open(document.path)
-        pages_dir = Path(f"{self.outdir}/{document.path.stem}")
+        pages_dir = Path(f"{outdir}/{document.path.stem}")
         pages_dir.mkdir(parents=True, exist_ok=True)
         items = []
         for page_num, page in enumerate(pdf.pages()):
