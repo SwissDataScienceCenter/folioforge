@@ -1,4 +1,4 @@
-from collections.abc import Iterator
+from collections.abc import Iterable
 from pathlib import Path
 
 from folioforge.models.document import DocumentReference
@@ -13,7 +13,7 @@ class LabelFilter(Postprocessor):
         self.keep = keep
         self.discard = discard
 
-    def process(self, documents: Iterator[DocumentReference], outdir: Path) -> Iterator[DocumentReference]:
+    def process(self, documents: Iterable[DocumentReference], outdir: Path) -> Iterable[DocumentReference]:
         for document in documents:
             for item in document.items:
                 if self.keep is not None:

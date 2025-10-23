@@ -1,4 +1,4 @@
-from collections.abc import Iterator
+from collections.abc import Iterable
 from pathlib import Path
 
 import cv2
@@ -37,7 +37,7 @@ def _label_to_color(label: Label) -> tuple[int, int, int]:
 class DebugPostprocessor(Postprocessor):
     """Saves debug images with annotations."""
 
-    def process(self, documents: Iterator[DocumentReference], outdir: Path) -> Iterator[DocumentReference]:
+    def process(self, documents: Iterable[DocumentReference], outdir: Path) -> Iterable[DocumentReference]:
         for document in documents:
             (outdir / document.path.stem / "debug").mkdir(parents=True, exist_ok=True)
             for item in document.items:
