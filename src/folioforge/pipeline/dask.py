@@ -10,6 +10,7 @@ from folioforge.extraction.protocol import Extractor
 from folioforge.models.document import DocumentEntry, DocumentReference
 from folioforge.output.protocol import OutputGenerator
 from folioforge.pipeline.protocol import PipelineExecutor
+from folioforge.postprocessor.protocol import Postprocessor
 from folioforge.preprocessor.protocol import Preprocessor
 
 
@@ -26,6 +27,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         preprocessors: list[Preprocessor],
         extractor: Extractor,
         format: OutputGenerator[T],
+        postprocessors: list[Postprocessor] | None,
         outdir: Path,
         n_workers: int = 4,
         threads_per_worker: int = 1,
@@ -33,6 +35,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
     ) -> None:
         self.preprocessors = preprocessors
         self.extractor = extractor
+        self.postprocessors = postprocessors
         self.format = format
         self.outdir = outdir
         self.n_workers = n_workers
@@ -48,6 +51,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         preprocessors: list[Preprocessor],
         extractor: Extractor,
         format: OutputGenerator[T],
+        postprocessors: list[Postprocessor] | None = None,
         outdir: Path | None = None,
         n_workers: int = 4,
         threads_per_worker: int = 1,
@@ -56,7 +60,14 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         if outdir is None:
             outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
         return DaskPipelineExecutor(
-            preprocessors, extractor, format, outdir, n_workers=n_workers, threads_per_worker=threads_per_worker, partitions=partitions
+            preprocessors,
+            extractor,
+            format,
+            postprocessors,
+            outdir,
+            n_workers=n_workers,
+            threads_per_worker=threads_per_worker,
+            partitions=partitions,
         )
 
     def extract(self, entry: tuple[Path, DocumentEntry]) -> tuple[Path, DocumentEntry]:
@@ -79,4 +90,8 @@ class DaskPipelineExecutor[T](PipelineExecutor):
             lambda e: DocumentReference(path=e[0], items=[i[1] for i in e[1]], converted="\n\n".join(i[1].converted or "" for i in e[1]))
         )
         result = cast(list[DocumentReference], references.compute())
+        if self.postprocessors:
+            for postprocessor in self.postprocessors:
+                result = postprocessor.process(result, self.outdir)
+
         return self.format.convert(result)

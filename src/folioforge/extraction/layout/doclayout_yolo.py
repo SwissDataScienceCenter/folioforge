@@ -12,12 +12,13 @@ class DoclayoutYOLODocLayNet(LayoutDetector):
     imgsz = 1120
     supports_pickle = True
 
-    def __init__(self):
+    def __init__(self, min_confidence: float = 0.2):
+        self.min_confidence = min_confidence
         filepath = hf_hub_download(self.repo_id, self.filename)
         self.model = YOLOv10(filepath)
 
     def detect(self, document: DocumentEntry) -> DocumentEntry:
-        predictions = self.model.predict(document.path, imgsz=self.imgsz, conf=0.2)
+        predictions = self.model.predict(document.path, imgsz=self.imgsz, conf=self.min_confidence)
         boxes = predictions[0].summary()
         for box in boxes:
             bbox = BoundingBox(x0=box["box"]["x1"], y0=box["box"]["y1"], x1=box["box"]["x2"], y1=box["box"]["y2"])

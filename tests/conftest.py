@@ -1,10 +1,8 @@
-import tempfile
 from pathlib import Path
 
 import pytest
 
-from folioforge.models.document import DocumentReference
-from folioforge.preprocessor.pdf import PDFPreprocessor
+from folioforge.models.document import DocumentEntry, DocumentReference
 
 
 @pytest.fixture
@@ -13,10 +11,11 @@ def pdf_file():
 
 
 @pytest.fixture
-def document_preprocessed(pdf_file: Path) -> DocumentReference:
-    document = DocumentReference(path=pdf_file, items=[], converted=None)
-    preprocessor = PDFPreprocessor()
-    outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
-    document = preprocessor.process(document, outdir)
-    assert document
+def image_file():
+    return Path(__file__).parent / "assets" / "test.png"
+
+
+@pytest.fixture
+def document_preprocessed(pdf_file: Path, image_file: Path) -> DocumentReference:
+    document = DocumentReference(path=pdf_file, items=[DocumentEntry(path=image_file, layout=[], converted=None)], converted=None)
     return document

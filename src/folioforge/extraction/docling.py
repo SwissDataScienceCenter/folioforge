@@ -14,7 +14,8 @@ from folioforge.models.labels import Label
 class DoclingExtractor(Extractor):
     supports_pickle = True
 
-    def __init__(self) -> None:
+    def __init__(self, min_confidence: float = 0.2) -> None:
+        self.min_confidence = min_confidence
         self.converter = DocumentConverter()
 
     def __map_label(self, label: DocItemLabel) -> Label:
@@ -47,6 +48,8 @@ class DoclingExtractor(Extractor):
         img = cv2.imread(str(entry.path))
         image_index = 0
         for unit in result.assembled.elements:
+            if unit.cluster.confidence < self.min_confidence:
+                continue
             bbox = unit.cluster.bbox
             label = self.__map_label(unit.label)
             bbox = BoundingBox(x0=bbox.l, y0=bbox.t, x1=bbox.r, y1=bbox.b)

@@ -17,6 +17,7 @@ from folioforge.output.protocol import OutputGenerator
 from folioforge.pipeline.dask import DaskPipelineExecutor
 from folioforge.pipeline.protocol import PipelineExecutor
 from folioforge.pipeline.simple import SimplePipelineExecutor
+from folioforge.postprocessor.debug import DebugPostprocessor
 from folioforge.preprocessor.pdf import PDFPreprocessor
 from folioforge.preprocessor.protocol import Preprocessor
 
@@ -52,12 +53,17 @@ def get_preprocessor():
 
 @app.command()
 def convert(
-    paths: Annotated[list[Path], typer.Argument()],
-    preprocessor: Annotated[list[PreprocessorTypes], typer.Option(default_factory=get_preprocessor)],
-    pipeline: PipelineTypes = PipelineTypes.simple,
-    extractor: ExtractorTypes = ExtractorTypes.docling,
-    format: OutputFormat = OutputFormat.markdown,
+    paths: Annotated[list[Path], typer.Argument(help="path of PDFs to convert")],
+    preprocessor: Annotated[
+        list[PreprocessorTypes], typer.Option(default_factory=get_preprocessor, help="the preprocessor to use, can specify multiple")
+    ],
+    pipeline: Annotated[PipelineTypes, typer.Option(help="the pipeline executor")] = PipelineTypes.simple,
+    extractor: Annotated[ExtractorTypes, typer.Option(help="the model to use")] = ExtractorTypes.docling,
+    format: Annotated[OutputFormat, typer.Option(help="what format to create results in")] = OutputFormat.markdown,
+    debug: Annotated[bool, typer.Option(help="turn on debug mode, stores annotated images in output folder")] = False,
+    confidence: Annotated[float, typer.Option(help="the minimum confidence threshold for layout detection")] = 0.2,
 ):
+    """Convert PDF documents to text."""
     executor_cls: type[PipelineExecutor]
     match pipeline:
         case PipelineTypes.simple:
@@ -77,17 +83,18 @@ def convert(
     match extractor:
         case ExtractorTypes.docling:
             extractor_cls = DoclingExtractor
+            extractor_args["min_confidence"] = confidence
         case ExtractorTypes.doclayout_yolo_doclaynet:
             extractor_cls = TwoPhaseExtractor
-            extractor_args["layout_detector"] = DoclayoutYOLODocLayNet()
+            extractor_args["layout_detector"] = DoclayoutYOLODocLayNet(min_confidence=confidence)
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
         case ExtractorTypes.doclayout_yolo_d4la:
             extractor_cls = TwoPhaseExtractor
-            extractor_args["layout_detector"] = DoclayoutYOLOD4LA()
+            extractor_args["layout_detector"] = DoclayoutYOLOD4LA(min_confidence=confidence)
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
         case ExtractorTypes.doclayout_yolo_docstructbench:
             extractor_cls = TwoPhaseExtractor
-            extractor_args["layout_detector"] = DoclayoutYOLODocStructBench()
+            extractor_args["layout_detector"] = DoclayoutYOLODocStructBench(min_confidence=confidence)
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
 
     format_cls: type[OutputGenerator]
@@ -101,7 +108,14 @@ def convert(
         case OutputFormat.html:
             format_cls = HtmlGenerator
 
-    executor = executor_cls.setup(preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), format=format_cls())
+    postprocessors = None
+
+    if debug:
+        postprocessors = [DebugPostprocessor()]
+
+    executor = executor_cls.setup(
+        preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), postprocessors=postprocessors, format=format_cls()
+    )
 
     result = executor.execute(paths)
     for r in result:
@@ -120,6 +134,7 @@ def evaluate(
     pipeline: PipelineTypes = PipelineTypes.simple,
     output: Path = Path("output.html"),
 ):
+    """Run a selection of models over a set of PDFs and create a report comparing the results."""
     evaluation_results = {t: [] for t in extractors}
 
     preprocessors: list[Preprocessor] = []
