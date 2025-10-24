@@ -52,3 +52,23 @@ class Threshold(Preprocessor):
                 img = cv2.threshold(img, self.threshold, 255, cv2.THRESH_BINARY)[1]
             cv2.imwrite(str(entry.path), img)
         return document
+
+
+class Invert(Preprocessor):
+    """Invert image.
+
+    threshold(float | None): if set, only invert if image brightness is below threshold.
+    """
+
+    def __init__(self, threshold: float | None = None) -> None:
+        self.threshold = threshold
+
+    def process(self, document: DocumentReference, outdir: Path) -> DocumentReference | None:
+        for entry in document.items:
+            img = cv2.imread(str(entry.path))
+            cols, rows = img.shape[:2]
+            brightness = np.sum(img) / (255 * cols * rows)
+            if self.threshold is None or brightness < self.threshold:
+                img = cv2.bitwise_not(img)
+                cv2.imwrite(str(entry.path), img)
+        return document

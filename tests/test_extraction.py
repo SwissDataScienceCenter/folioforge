@@ -11,7 +11,7 @@ def test_docling(document_preprocessed: DocumentReference):
     assert entry
     assert (
         entry.converted
-        == "## This is a test PDF document.\n\nIf you can read this; you have Adobe Acrobat Reader installed on your computer ."
+        == "## This is a test PDF document.\n\nIf you can read this, you have Adobe Acrobat Reader installed on your computer ."
     )
 
 
