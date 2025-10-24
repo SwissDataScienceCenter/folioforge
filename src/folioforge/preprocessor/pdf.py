@@ -7,8 +7,6 @@ from folioforge.preprocessor.protocol import Preprocessor
 
 
 class PDFPreprocessor(Preprocessor):
-    name = "pdf-preprocessor"
-
     def __init__(self, filter_non_pdfs: bool = True) -> None:
         self.filter_non_pdfs = filter_non_pdfs
 
