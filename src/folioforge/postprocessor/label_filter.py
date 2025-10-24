@@ -22,3 +22,21 @@ class LabelFilter(Postprocessor):
                     item.layout = [area for area in item.layout if area.label not in self.discard]
 
             yield document
+
+
+class LabelConfidenceFilter(Postprocessor):
+    """Filters out elements based confidence thresholds per label."""
+
+    def __init__(self, label_confidence: dict[Label, float]) -> None:
+        self.label_confidence = label_confidence
+
+    def process(self, documents: Iterable[DocumentReference], outdir: Path) -> Iterable[DocumentReference]:
+        for document in documents:
+            for item in document.items:
+                item.layout = [
+                    area
+                    for area in item.layout
+                    if area.label not in self.label_confidence or area.confidence >= self.label_confidence[area.label]
+                ]
+
+            yield document
