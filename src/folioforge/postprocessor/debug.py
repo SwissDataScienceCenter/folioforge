@@ -3,7 +3,7 @@ from pathlib import Path
 
 import cv2
 
-from folioforge.models.document import DocumentReference
+from folioforge.models.document import DocumentReference, Table
 from folioforge.models.labels import Label
 from folioforge.postprocessor.protocol import Postprocessor
 
@@ -61,6 +61,28 @@ class DebugPostprocessor(Postprocessor):
                         color,
                         3,
                     )
+                    # render table cells
+                    if isinstance(area, Table):
+                        for header in area.headers:
+                            if not header.bbox:
+                                continue
+                            img = cv2.rectangle(
+                                img,
+                                (int(header.bbox.x0), int(header.bbox.y0)),
+                                (int(header.bbox.x1), int(header.bbox.y1)),
+                                color,
+                                thickness=2,
+                            )
+                        for cell in area.cells:
+                            if not cell.bbox:
+                                continue
+                            img = cv2.rectangle(
+                                img,
+                                (int(cell.bbox.x0), int(cell.bbox.y0)),
+                                (int(cell.bbox.x1), int(cell.bbox.y1)),
+                                color,
+                                thickness=1,
+                            )
 
                 cv2.imwrite(str(outdir / document.path.stem / "debug" / item.path.name), img)
             yield document

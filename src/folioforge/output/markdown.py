@@ -1,4 +1,5 @@
 from functools import singledispatchmethod
+from itertools import groupby
 
 from folioforge.models.document import Area, DocumentReference, Heading, Image, ListItem, Table, Text
 from folioforge.output.protocol import OutputGenerator
@@ -45,7 +46,7 @@ class MarkdownGenerator(OutputGenerator[list[str]]):
         headers = value.headers
         cells = value.cells
 
-        if not cells:
+        if not cells and not headers:
             return value.converted or ""
 
         cells = sorted(cells, key=lambda h: (h.start_row, h.start_col))
@@ -59,19 +60,22 @@ class MarkdownGenerator(OutputGenerator[list[str]]):
                 max_len[cell.start_col] = text_len
 
         if headers:
-            headers = sorted(headers, key=lambda h: (h.start_col, h.start_row))
-            result.append("| " + "| ".join((h.converted or "").ljust(max_len[h.start_col] + 1) for h in headers) + "|")
+            headers = sorted(headers, key=lambda h: (h.start_row, h.start_col))
+            current_row = headers[0].start_row
+            for _, group in groupby(headers, key=lambda h: h.start_row):
+                result.append("| " + "| ".join((h.converted or "").ljust(max_len[h.start_col] + 1) for h in group) + "|")
             result.append("| " + " | ".join("-" * (max_len[h.start_col]) for h in headers) + " |")
 
-        current_row = cells[0].start_row
-        current_line = ""
-        for cell in cells:
-            if cell.start_row != current_row:
-                result.append(current_line + "|")
-                current_line = ""
-                current_row = cell.start_row
-            current_line += "| " + (cell.converted or "").ljust(max_len[cell.start_col] + 1)
-        result.append(current_line + "|")
+        if cells:
+            current_row = cells[0].start_row
+            current_line = ""
+            for cell in cells:
+                if cell.start_row != current_row:
+                    result.append(current_line + "|")
+                    current_line = ""
+                    current_row = cell.start_row
+                current_line += "| " + (cell.converted or "").ljust(max_len[cell.start_col] + 1)
+            result.append(current_line + "|")
         return "\n".join(result)
 
     @convert_element.register

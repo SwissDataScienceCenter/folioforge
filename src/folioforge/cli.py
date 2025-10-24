@@ -6,6 +6,7 @@ import typer
 
 from folioforge.extraction.docling import DoclingExtractor
 from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLOD4LA, DoclayoutYOLODocLayNet, DoclayoutYOLODocStructBench
+from folioforge.extraction.marker import MarkerPDFExtractor
 from folioforge.extraction.ocr.paddle import PaddleOcrExtractor
 from folioforge.extraction.protocol import Extractor
 from folioforge.extraction.two_phase import TwoPhaseExtractor
@@ -38,6 +39,7 @@ class ExtractorTypes(str, Enum):
     doclayout_yolo_doclaynet = "doclayout_yolo_doclaynet"
     doclayout_yolo_d4la = "doclayout_yolo_d4la"
     doclayout_yolo_docstructbench = "doclayout_yolo_docstructbench"
+    marker = "marker"
 
 
 class OutputFormat(str, Enum):
@@ -96,6 +98,9 @@ def convert(
             extractor_cls = TwoPhaseExtractor
             extractor_args["layout_detector"] = DoclayoutYOLODocStructBench(min_confidence=confidence)
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
+        case ExtractorTypes.marker:
+            extractor_cls = MarkerPDFExtractor
+            extractor_args["min_confidence"] = confidence
 
     format_cls: type[OutputGenerator]
     match format:
