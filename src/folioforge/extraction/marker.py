@@ -113,6 +113,7 @@ class MarkerPDFExtractor(Extractor):
 
     def _convert_image(self, chunk: FlatBlockOutput, entry: DocumentEntry) -> Area:
         img = cv2.imread(str(entry.path))
+        assert img is not None
         img_path = Path(entry.path).parent / f"image_{entry.path.stem}_{chunk.id.replace('/', '_')}.png"
         cropped = img[int(chunk.bbox[1]) : int(chunk.bbox[3]), int(chunk.bbox[0]) : int(chunk.bbox[2])]
         cv2.imwrite(str(img_path), cropped)

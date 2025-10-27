@@ -46,6 +46,7 @@ class DoclingExtractor(Extractor):
     def extract(self, entry: DocumentEntry) -> DocumentEntry:
         result = next(self.converter.convert_all(source=[entry.path]))
         img = cv2.imread(str(entry.path))
+        assert img is not None
         image_index = 0
         for unit in result.assembled.elements:
             if unit.cluster.confidence < self.min_confidence:

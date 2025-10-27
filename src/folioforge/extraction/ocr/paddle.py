@@ -18,6 +18,7 @@ class PaddleOcrExtractor(OcrExtractor):
 
     def extract(self, entry: DocumentEntry) -> DocumentEntry:
         img = cv2.imread(str(entry.path))
+        assert img is not None
         entry.layout = sorted(entry.layout, key=lambda a: (a.bbox.y0, a.bbox.x0))
         image_index = 0
         for area in entry.layout:
