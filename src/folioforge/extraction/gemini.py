@@ -30,7 +30,6 @@ Valid labels are:
 The response must be a valid JSON array. Each element in the array should be an object representing a single text block, with the following
 structure:
 {
-  "text": "The extracted text content from the block.",
   "label": "TEXT",
   "boundingBox": {
     "x": 0.123,  // Normalized top-left x-coordinate (0.0 to 1.0, from left edge of the image).
@@ -38,6 +37,29 @@ structure:
     "width": 0.789, // Normalized width of the bounding box (0.0 to 1.0, relative to image width).
     "height": 0.012 // Normalized height of the bounding box (0.0 to 1.0, relative to image height).
   }
+  "text": "The extracted text content from the block.",
+  "headers": [ // only on label "TABLE"
+      {
+        "row_span": 1, // how many rows the header spans
+        "col_span": 1, // how many columns the header spans
+        "start_row": 0, // the row the header is on
+        "end_row": 1, // the row the header ends at (the following row)
+        "start_col": 0, // the column the header is on
+        "end_col": 1, // the column the header ends at (the following column)
+        "converted": "The extracted text of the header"
+      },
+  ],
+  "cells": [ // only on label "TABLE"
+      {
+        "row_span": 1, // how many rows the cell spans
+        "col_span": 1, // how many columns the cell spans
+        "start_row": 0, // the row the cell is on
+        "end_row": 1, // the row the cell ends at (the following row)
+        "start_col": 0, // the column the cell is on
+        "end_col": 1, // the column the cell ends at (the following column)
+        "converted": "The extracted text of the cell"
+      },
+  ]
 }
 Ensure all coordinates in "boundingBox" are normalized values between 0.0 and 1.0, relative to the dimensions of their specific image.
 The origin (0,0) for x and y is the top-left corner of the image.
@@ -51,7 +73,7 @@ class GeminiExtractor(Extractor):
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel(model_name="gemini-2.5-flash")
         self.example_file_upload = genai.upload_file(path=Path(__file__).parent.parent / "assets" / "example.png")
-        self.example_json_string = (Path(__file__).parent.parent / "assets" / "example.png").read_text()
+        self.example_json_string = (Path(__file__).parent.parent / "assets" / "example.json").read_text()
         self.retries = retries
 
     def extract(self, entry: DocumentEntry) -> DocumentEntry:
@@ -87,7 +109,7 @@ class GeminiExtractor(Extractor):
         return entry
 
     def convert_block(self, block: dict[str, Any], img: NDArray, entry: DocumentEntry, chunk: int) -> Area:
-        cols, rows = img.shape[:2]
+        rows, cols = img.shape[:2]
         # todo: use pydantic
         bbox_json: dict[str, float] = block.get("boundingBox")  # type: ignore
         x = bbox_json["x"] * cols
@@ -96,22 +118,22 @@ class GeminiExtractor(Extractor):
         label = block.get("label", "Other")
         match label:
             case "TABLE":
-                return Table(bbox=bbox, label=Label.TABLE, confidence=1.0, headers=[], cells=[], converted=None)
+                return Table(bbox=bbox, label=Label.TABLE, confidence=1.0, headers=[], cells=[], converted=block["text"])
             case "IMAGE":
                 img_path = Path(entry.path).parent / f"image_{entry.path.stem}_{chunk}.png"
                 cropped = img[int(bbox.y0) : int(bbox.y1), int(bbox.x0) : int(bbox.x1)]
                 cv2.imwrite(str(img_path), cropped)
                 return Image(bbox=bbox, label=Label.IMAGE, confidence=1.0, converted=None, path=img_path)
             case "TITLE":
-                return Heading(level=1, bbox=bbox, label=Label.TITLE, confidence=1.0, converted=None)
+                return Heading(level=1, bbox=bbox, label=Label.TITLE, confidence=1.0, converted=block["text"])
             case "SECTION_HEADER":
-                return Heading(level=2, bbox=bbox, label=Label.SECTION_HEADER, confidence=1.0, converted=None)
+                return Heading(level=2, bbox=bbox, label=Label.SECTION_HEADER, confidence=1.0, converted=block["text"])
             case _:
                 return Area(
                     bbox=bbox,
                     label=Label[label],
                     confidence=1.0,
-                    converted=None,
+                    converted=block["text"],
                 )
 
     def clean_json_response(self, text: str) -> str:

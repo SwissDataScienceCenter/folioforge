@@ -5,6 +5,7 @@ from typing import Annotated, Any
 import typer
 
 from folioforge.extraction.docling import DoclingExtractor
+from folioforge.extraction.gemini import GeminiExtractor
 from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLOD4LA, DoclayoutYOLODocLayNet, DoclayoutYOLODocStructBench
 from folioforge.extraction.marker import MarkerPDFExtractor
 from folioforge.extraction.ocr.paddle import PaddleOcrExtractor
@@ -40,6 +41,7 @@ class ExtractorTypes(str, Enum):
     doclayout_yolo_d4la = "doclayout_yolo_d4la"
     doclayout_yolo_docstructbench = "doclayout_yolo_docstructbench"
     marker = "marker"
+    gemini = "gemini"
 
 
 class OutputFormat(str, Enum):
@@ -101,6 +103,8 @@ def convert(
         case ExtractorTypes.marker:
             extractor_cls = MarkerPDFExtractor
             extractor_args["min_confidence"] = confidence
+        case ExtractorTypes.gemini:
+            extractor_cls = GeminiExtractor
 
     format_cls: type[OutputGenerator]
     match format:

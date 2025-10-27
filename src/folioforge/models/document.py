@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pydantic import BaseModel, field_serializer
+from pydantic import BaseModel, SerializeAsAny, field_serializer
 
 from folioforge.models.labels import Label
 
@@ -61,7 +61,7 @@ class DocumentEntry(BaseModel):
     """Represents a single entry in a document (e.g. page)"""
 
     path: Path
-    layout: list[Area]
+    layout: list[SerializeAsAny[Area]]
     converted: str | None
 
 
