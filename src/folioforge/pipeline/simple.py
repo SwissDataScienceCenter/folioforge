@@ -51,5 +51,5 @@ class SimplePipelineExecutor[T](PipelineExecutor):
             ref.converted = "\n\n".join(i.converted or "" for i in ref.items)
         if self.postprocessors:
             for postprocessor in self.postprocessors:
-                references = postprocessor.process(references, self.outdir)
+                references = list(postprocessor.process(references, self.outdir))
         return self.format.convert(references)

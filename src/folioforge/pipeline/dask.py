@@ -92,6 +92,6 @@ class DaskPipelineExecutor[T](PipelineExecutor):
         result = cast(list[DocumentReference], references.compute())
         if self.postprocessors:
             for postprocessor in self.postprocessors:
-                result = postprocessor.process(result, self.outdir)
+                result = list(postprocessor.process(result, self.outdir))
 
         return self.format.convert(result)

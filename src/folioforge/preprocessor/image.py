@@ -16,6 +16,7 @@ class AutoBrightness(Preprocessor):
     def process(self, document: DocumentReference, outdir: Path) -> DocumentReference | None:
         for entry in document.items:
             img = cv2.imread(str(entry.path))
+            assert img is not None
             cols, rows = img.shape[:2]
             brightness = np.sum(img) / (255 * cols * rows)
             ratio = brightness / self.min_brightness
@@ -32,6 +33,7 @@ class Grayscale(Preprocessor):
     def process(self, document: DocumentReference, outdir: Path) -> DocumentReference | None:
         for entry in document.items:
             img = cv2.imread(str(entry.path))
+            assert img is not None
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             cv2.imwrite(str(entry.path), img)
         return document
@@ -46,6 +48,7 @@ class Threshold(Preprocessor):
     def process(self, document: DocumentReference, outdir: Path) -> DocumentReference | None:
         for entry in document.items:
             img = cv2.imread(str(entry.path), cv2.IMREAD_GRAYSCALE)
+            assert img is not None
             if self.threshold is None:
                 img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
             else:
@@ -66,6 +69,7 @@ class Invert(Preprocessor):
     def process(self, document: DocumentReference, outdir: Path) -> DocumentReference | None:
         for entry in document.items:
             img = cv2.imread(str(entry.path))
+            assert img is not None
             cols, rows = img.shape[:2]
             brightness = np.sum(img) / (255 * cols * rows)
             if self.threshold is None or brightness < self.threshold:
