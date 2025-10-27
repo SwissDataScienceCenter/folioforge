@@ -1,0 +1,236 @@
+[
+  {
+    "label": "PAGE_HEADER",
+    "confidence": 0.7009118795394897,
+    "boundingBox": {
+      "x": 0.08984375,
+      "y": 0.0715725800485322,
+      "width": 0.11263020833333333,
+      "height": 0.020161286941682444
+    },
+    "text": "Page Header!"
+  },
+  {
+    "label": "TITLE",
+    "confidence": 0.6941468119621277,
+    "boundingBox": {
+      "x": 0.4036458333333333,
+      "y": 0.1275201600970644,
+      "width": 0.19596354166666666,
+      "height": 0.03175402708727905
+    },
+    "text": "Test PDF"
+  },
+  {
+    "label": "SECTION_HEADER",
+    "confidence": 0.881793200969696,
+    "boundingBox": {
+      "x": 0.091796875,
+      "y": 0.18447580048532197,
+      "width": 0.12109375,
+      "height": 0.020665320194128787
+    },
+    "text": "Section 1"
+  },
+  {
+    "label": "TEXT",
+    "confidence": 0.7479976415634155,
+    "boundingBox": {
+      "x": 0.09049479166666667,
+      "y": 0.21370967980587122,
+      "width": 0.1875,
+      "height": 0.046875
+    },
+    "text": "This is the first section. It contains dummy text"
+  },
+  {
+    "label": "SECTION_HEADER",
+    "confidence": 0.8819831609725952,
+    "boundingBox": {
+      "x": 0.09244791666666667,
+      "y": 0.28578628077651513,
+      "width": 0.12044270833333333,
+      "height": 0.020665320194128787
+    },
+    "text": "Section 2"
+  },
+  {
+    "label": "TEXT",
+    "confidence": 0.7790505290031433,
+    "boundingBox": {
+      "x": 0.08984375,
+      "y": 0.31502014776672976,
+      "width": 0.24674479166666666,
+      "height": 0.019657266019570754
+    },
+    "text": "This section contains an image"
+  },
+  {
+    "label": "IMAGE",
+    "confidence": 0.960587739944458,
+    "boundingBox": {
+      "x": 0.20227421779258578,
+      "y": 0.355064179391572,
+      "width": 0.22507455863204656,
+      "height": 0.17505648526278408
+    },
+    "text": ""
+  }
+  {
+    "label": "SECTION_HEADER",
+    "confidence": 0.8731317520141602,
+    "boundingBox": {
+      "x": 0.091796875,
+      "y": 0.5584677339804294,
+      "width": 0.10611979166666667,
+      "height": 0.01864918718434341
+    },
+    "text": "Section 3"
+  },
+  {
+    "label": "TEXT",
+    "confidence": 0.7807344198226929,
+    "boundingBox": {
+      "x": 0.09049479166666667,
+      "y": 0.586189482717803,
+      "width": 0.15299479166666666,
+      "height": 0.01713709359217174
+    },
+    "text": "This contains a list"
+  },
+  {
+    "label": "LIST_ITEM",
+    "confidence": 0.9160488247871399,
+    "boundingBox": {
+      "x": 0.14908854166666666,
+      "y": 0.6144152955334596,
+      "width": 0.08268229166666667,
+      "height": 0.019657266019570685
+    },
+    "text": "Entry one"
+  },
+  {
+    "label": "LIST_ITEM",
+    "confidence": 0.9140735268592834,
+    "boundingBox": {
+      "x": 0.14778645833333334,
+      "y": 0.6426411083491163,
+      "width": 0.0859375,
+      "height": 0.02016128077651515
+    },
+    "text": "Entry two"
+  },
+  {
+    "label": "LIST_ITEM",
+    "confidence": 0.9113417267799377,
+    "boundingBox": {
+      "x": 0.14973958333333334,
+      "y": 0.6723790147569444,
+      "width": 0.09244791666666667,
+      "height": 0.018145172427399082
+    },
+    "text": "Entry three"
+  },
+  {
+    "label": "SECTION_HEADER",
+    "confidence": 0.8920072913169861,
+    "boundingBox": {
+      "x": 0.09114583333333333,
+      "y": 0.7142136699021465,
+      "width": 0.12239583333333333,
+      "height": 0.02167342369002516
+    },
+    "text": "Section 4"
+  },
+  {
+    "label": "TEXT",
+    "confidence": 0.6784387826919556,
+    "boundingBox": {
+      "x": 0.09049479166666667,
+      "y": 0.7444556403882576,
+      "width": 0.12760416666666666,
+      "height": 0.017137093592171672
+    },
+    "text": "This has a table"
+  },
+  {
+    "label": "TABLE",
+    "confidence": 0.5553733110427856,
+    "boundingBox": {
+      "x": 0.09114583333333333,
+      "y": 0.7731854679608586,
+      "width": 0.6126302083333334,
+      "height": 0.052282216698232276
+    },
+    "text": "<table><tbody><tr><th>Column A</th><th>Colum B</th></tr><tr><td>Cell containing text</td><td>Cell containing other text</td></tr><tr><td>Wow we have several rows</td><td>This is great!</td></tr></tbody></table"
+    "headers": [
+      {
+        "row_span": 1,
+        "col_span": 1,
+        "start_row": 0,
+        "end_row": 1,
+        "start_col": 0,
+        "end_col": 1,
+        "converted": "Column A"
+      },
+      {
+        "row_span": 1,
+        "col_span": 1,
+        "start_row": 0,
+        "end_row": 1,
+        "start_col": 1,
+        "end_col": 2,
+        "converted": "Colum B"
+      }
+    ],
+    "cells": [
+      {
+        "row_span": 1,
+        "col_span": 1,
+        "start_row": 1,
+        "end_row": 2,
+        "start_col": 0,
+        "end_col": 1,
+        "converted": "Cell containing text"
+      },
+      {
+        "row_span": 1,
+        "col_span": 1,
+        "start_row": 1,
+        "end_row": 2,
+        "start_col": 1,
+        "end_col": 2,
+        "converted": "Cell containing other text"
+      },
+      {
+        "row_span": 1,
+        "col_span": 1,
+        "start_row": 2,
+        "end_row": 3,
+        "start_col": 0,
+        "end_col": 1,
+        "converted": "Wow we have several rows"
+      },
+      {
+        "row_span": 1,
+        "col_span": 1,
+        "start_row": 2,
+        "end_row": 3,
+        "start_col": 1,
+        "end_col": 2,
+        "converted": "This is great!"
+      }
+    ]
+  },
+  {
+    "label": "PAGE_FOOTER",
+    "confidence": 0.7677967548370361,
+    "boundingBox": {
+      "x": 0.09049479166666667,
+      "y": 0.9107862807765151,
+      "width": 0.12369791666666667,
+      "height": 0.019153251262626216
+    },
+    "text": "This is a footer"
+  },
+]
