@@ -1,0 +1,277 @@
+[
+  {
+    "text": "MINUTES OF PROCEEDINGS OF THE SITTING OF TUESDAY, 13 NOVEMBER 1979",
+    "label": "TITLE",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.17524895248272715,
+      "y": 0.14616805943844202,
+      "width": 0.6420335455441967,
+      "height": 0.01754016713261304
+    }
+  },
+  {
+    "text": "IN THE CHAIR: MRS VEIL\nPresident",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.4012709659651229,
+      "y": 0.18943380503222085,
+      "width": 0.18507599654717913,
+      "height": 0.03508033426522608
+    }
+  },
+  {
+    "text": "(The sitting was opened at 10 a.m.)",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.37506551512658426,
+      "y": 0.25491709566064286,
+      "width": 0.23912473890166508,
+      "height": 0.014032133706090433
+    }
+  },
+  {
+    "text": "1..Approval of minutes",
+    "label": "SECTION_HEADER",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10809748470897189,
+      "y": 0.3192310418135574,
+      "width": 0.15231918299900585,
+      "height": 0.014032133706090433
+    }
+  },
+  {
+    "text": "Mr de Goede spoke.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10645964403156322,
+      "y": 0.3472953092257382,
+      "width": 0.13921645757973652,
+      "height": 0.014032133706090433
+    }
+  },
+  {
+    "text": "The minutes of proceedings of the previous day's sitting were approved.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10645964403156322,
+      "y": 0.3765289211134266,
+      "width": 0.3636006303847236,
+      "height": 0.02689492293667333
+    }
+  },
+  {
+    "text": "2. Agenda",
+    "label": "SECTION_HEADER",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10482180335415456,
+      "y": 0.43148811146228083,
+      "width": 0.06878930845116393,
+      "height": 0.014032133706090433
+    }
+  },
+  {
+    "text": "— Proposal from the Commission for a Regulation amending the Staff Regulations of officials of the Communities (Doc. 202/79)",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5093684506740948,
+      "y": 0.32273907524007994,
+      "width": 0.36687631173954094,
+      "height": 0.03975771216725623
+    }
+  },
+  {
+    "text": "Mr Lange gave the opinion of the Committee on Budgets, the committee responsible.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5093684506740948,
+      "y": 0.37769826558893416,
+      "width": 0.36687631173954094,
+      "height": 0.025725578461165795
+    }
+  },
+  {
+    "text": "The following spoke: Mr Klepsch, who withdrew on behalf of the Group of the European People's Party (CD Group) the request for urgent debate on the motion for a resolution on summer time (Doc. 1-452/79), and Mr Tugendhat, Member of the Commission.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5093684506740948,
+      "y": 0.41745597775619037,
+      "width": 0.36687631173954094,
+      "height": 0.06548329062842202
+    }
+  },
+  {
+    "text": "The President announced to Parliament that the report by Mr Key, on behalf of the Committee on Budgetary Control, on the representation allowances and expenses of members of the Commission, entered as a possible item on the agenda for the sitting of Thursday, 15 November, had been withdrawn since this committee had not been able to meet.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10318396267674589,
+      "y": 0.46072172334996925,
+      "width": 0.36687631173954094,
+      "height": 0.09003952461408028
+    }
+  },
+  {
+    "text": "Parliament rejected the request for urgent debate on the Commission's proposal for a Regulation.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5060927693192775,
+      "y": 0.4981407465662104,
+      "width": 0.36687631173954094,
+      "height": 0.02689492293667333
+    }
+  },
+  {
+    "text": "3. Urgent debate",
+    "label": "SECTION_HEADER",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10482180335415456,
+      "y": 0.5811642043272455,
+      "width": 0.11628668809601521,
+      "height": 0.012862789230582898
+    }
+  },
+  {
+    "text": "— Draft rectifying and supplementary budget No 3 for 1979 (Doc. 1-470/79)",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5077306099966862,
+      "y": 0.5460838700620194,
+      "width": 0.36687631173954094,
+      "height": 0.025725578461165795
+    }
+  },
+  {
+    "text": "The President announced that she had received from Mr Pedini, on behalf of the Committee on Youth, Culture, Education, Information and Sport, a motion for a resolution, with request for urgent debate pursuant to Rule 14 of the Rules of Procedure, on the meeting of the Council of Education Ministers (Doc. 1-473/79/rev. II).",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10318396267674589,
+      "y": 0.6092284717394263,
+      "width": 0.3636006303847236,
+      "height": 0.0877008356630652
+    }
+  },
+  {
+    "text": "The following spoke: Mr Lange, who gave the opinion of the Committee on Budgets, the committee responsible, Mr Klepsch, on behalf of the Group of the European People's Party (CD Group), Mr Bangemann, on behalf of the Liberal and Democratic Group, Mr Scott-Hopkins, on behalf of the European Democratic Group, and Mr Lange, Chairman of the Committee on Budgets.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5077306099966862,
+      "y": 0.5870109267047832,
+      "width": 0.36687631173954094,
+      "height": 0.10173296936915564
+    }
+  },
+  {
+    "text": "Parliament rejected the request for urgent debate.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5077306099966862,
+      "y": 0.7027760297800292,
+      "width": 0.33411949819136766,
+      "height": 0.014032133706090433
+    }
+  },
+  {
+    "text": "She stated that the reasons supporting this request for urgent debate were contained in the document itself.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.09990828132192855,
+      "y": 0.7121307855840895,
+      "width": 0.36687631173954094,
+      "height": 0.025725578461165795
+    }
+  },
+  {
+    "text": "She announced that, pursuant to Rule 14 (1), second subparagraph, of the Rules of Procedure, the vote on this request would take place at the beginning of the next day's sitting.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.09990828132192855,
+      "y": 0.7530578422268532,
+      "width": 0.3685141524169496,
+      "height": 0.05028181244682405
+    }
+  },
+  {
+    "text": "4. Decision on urgency",
+    "label": "SECTION_HEADER",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10154612199933723,
+      "y": 0.8325732665613658,
+      "width": 0.15231918299900585,
+      "height": 0.014032133706090433
+    }
+  },
+  {
+    "text": "The first item on the agenda was the decision on the urgency of a proposal for a Regulation, draft rectifying and supplementary budget No 3, and two motions for resolutions.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.10154612199933723,
+      "y": 0.8606375339735466,
+      "width": 0.3652384710621323,
+      "height": 0.05028181244682405
+    }
+  },
+  {
+    "text": "— Motion for a resolution on summer time (Doc. 1-452/79)",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5060927693192775,
+      "y": 0.7378563640452553,
+      "width": 0.3652384710621323,
+      "height": 0.025725578461165795
+    }
+  },
+  {
+    "text": "The President noted Mr Klepsch's withdrawal of the request for urgent debate.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5060927693192775,
+      "y": 0.7787834206880191,
+      "width": 0.36687631173954094,
+      "height": 0.025725578461165795
+    }
+  },
+  {
+    "text": "Pursuant to Rule 25 of the Rules of Procedure, this motion was referred to the appropriate committee, in this case the Committee on Transport; the Political Affairs Committee was asked for an opinion.",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.4995414066096428,
+      "y": 0.8185411328552753,
+      "width": 0.38489255919103627,
+      "height": 0.05145115692233159
+    }
+  },
+  {
+    "text": "— Motion for a resolution on UK immigration controls (Doc. 1-479/79)",
+    "label": "TEXT",
+    "pageNumber": 0,
+    "boundingBox": {
+      "x": 0.5044549286418688,
+      "y": 0.8875324569102199,
+      "width": 0.36687631173954094,
+      "height": 0.02689492293667333
+    }
+  }
+]
