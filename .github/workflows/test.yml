@@ -35,6 +35,8 @@ jobs:
         run: uv python install
       - name: install project
         run: uv sync --locked --all-extras --dev
+      - name: check license compatibility
+        run: uv run licensecheck -0 --ignore-packages "nvidia-*"
       - name: ruff
         run: uv run ruff check
       - name: ty

@@ -29,7 +29,13 @@ pymupdf = ["pymupdf>=1.26.4"]
 all = ["folioforge[marker,doclayout_yolo,pymupdf]"]
 
 [dependency-groups]
-dev = ["pre-commit>=4.3.0", "pytest>=8.4.2", "ruff>=0.14.0", "ty>=0.0.1a21"]
+dev = [
+    "licensecheck>=2025.1.0",
+    "pre-commit>=4.3.0",
+    "pytest>=8.4.2",
+    "ruff>=0.14.0",
+    "ty>=0.0.1a21",
+]
 
 [project.scripts]
 folioforge = "folioforge.cli:app"
