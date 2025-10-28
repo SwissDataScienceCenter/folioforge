@@ -15,6 +15,13 @@ as a library:
 ```bash
 $ uv add "folioforge @ git+https://github.com/SwissDataScienceCenter/folioforge"
 ```
+Note that there are several optional dependencies that can be installed as extras. These are mostly GPL licensed libraries which are
+optional to allow usage of folioforge without needing the GPL license. These are:
+- doclayout_yolo
+- marker
+- pymupdf
+
+You can also install the `all` extra to install all of them.
 
 ## Usage
 
