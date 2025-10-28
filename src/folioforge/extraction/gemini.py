@@ -9,7 +9,7 @@ import google.generativeai as genai
 from numpy._typing import NDArray
 
 from folioforge.extraction.protocol import Extractor
-from folioforge.models.document import Area, BoundingBox, DocumentEntry, Heading, Image, Table
+from folioforge.models.document import Area, BoundingBox, DocumentEntry, Heading, Image, Table, TableCell
 from folioforge.models.labels import Label
 
 PROMPT = """
@@ -118,7 +118,37 @@ class GeminiExtractor(Extractor):
         label = block.get("label", "Other")
         match label:
             case "TABLE":
-                return Table(bbox=bbox, label=Label.TABLE, confidence=1.0, headers=[], cells=[], converted=block["text"])
+                headers = []
+                if headers_data := block.get("headers"):
+                    headers = [
+                        TableCell(
+                            bbox=None,
+                            row_span=header["row_span"],
+                            col_span=header["row_span"],
+                            start_row=header["start_row"],
+                            end_row=header["end_row"],
+                            start_col=header["start_col"],
+                            end_col=header["end_col"],
+                            converted=header["converted"],
+                        )
+                        for header in headers_data
+                    ]
+                cells = []
+                if cells_data := block.get("cells"):
+                    cells = [
+                        TableCell(
+                            bbox=None,
+                            row_span=cell["row_span"],
+                            col_span=cell["row_span"],
+                            start_row=cell["start_row"],
+                            end_row=cell["end_row"],
+                            start_col=cell["start_col"],
+                            end_col=cell["end_col"],
+                            converted=cell["converted"],
+                        )
+                        for cell in cells_data
+                    ]
+                return Table(bbox=bbox, label=Label.TABLE, confidence=1.0, headers=headers, cells=cells, converted=block["text"])
             case "IMAGE":
                 img_path = Path(entry.path).parent / f"image_{entry.path.stem}_{chunk}.png"
                 cropped = img[int(bbox.y0) : int(bbox.y1), int(bbox.x0) : int(bbox.x1)]

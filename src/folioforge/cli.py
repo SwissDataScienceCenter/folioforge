@@ -132,7 +132,8 @@ def convert(
 
 
 def default_evaluation_extractors() -> list[ExtractorTypes]:
-    return list(ExtractorTypes)
+    # we exclude gemini because it's reeeeally slow
+    return [e for e in ExtractorTypes if e != ExtractorTypes.gemini]
 
 
 @app.command()
