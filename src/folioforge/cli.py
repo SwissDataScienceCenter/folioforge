@@ -66,6 +66,7 @@ def convert(
     format: Annotated[OutputFormat, typer.Option(help="what format to create results in")] = OutputFormat.markdown,
     debug: Annotated[bool, typer.Option(help="turn on debug mode, stores annotated images in output folder")] = False,
     confidence: Annotated[float, typer.Option(help="the minimum confidence threshold for layout detection")] = 0.2,
+    out: Annotated[Path | None, typer.Option(help="output folder, print to stdout if not supplied")] = None,
 ):
     """Convert PDF documents to text."""
     executor_cls: type[PipelineExecutor]
@@ -127,8 +128,13 @@ def convert(
     )
 
     result = executor.execute(paths)
-    for r in result:
-        print(r)
+    if out is None:
+        for r in result:
+            print(r[1])
+    else:
+        out.mkdir(parents=True, exist_ok=True)
+        for r in result:
+            (out / r[0].path.stem).write_text(r[1])
 
 
 def default_evaluation_extractors() -> list[ExtractorTypes]:

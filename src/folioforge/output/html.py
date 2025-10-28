@@ -4,13 +4,13 @@ from folioforge.models.document import DocumentReference, Heading, Image, ListIt
 from folioforge.output.protocol import OutputGenerator
 
 
-class HtmlGenerator(OutputGenerator[list[str]]):
+class HtmlGenerator(OutputGenerator[str]):
     def __init__(self, full: bool = True) -> None:
         self.full = full
         self.in_list = False
 
-    def convert(self, documents: list[DocumentReference]) -> list[str]:
-        return [self.to_html(d) for d in documents]
+    def convert(self, documents: list[DocumentReference]) -> list[tuple[DocumentReference, str]]:
+        return [(d, self.to_html(d)) for d in documents]
 
     def to_html(self, document: DocumentReference) -> str:
         output = "<html><body>" if self.full else ""

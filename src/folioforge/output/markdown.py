@@ -5,9 +5,9 @@ from folioforge.models.document import Area, DocumentReference, Heading, Image, 
 from folioforge.output.protocol import OutputGenerator
 
 
-class MarkdownGenerator(OutputGenerator[list[str]]):
-    def convert(self, documents: list[DocumentReference]) -> list[str]:
-        return [self.to_markdown(d) for d in documents]
+class MarkdownGenerator(OutputGenerator[str]):
+    def convert(self, documents: list[DocumentReference]) -> list[tuple[DocumentReference, str]]:
+        return [(d, self.to_markdown(d)) for d in documents]
 
     def to_markdown(self, document: DocumentReference) -> str:
         result = []

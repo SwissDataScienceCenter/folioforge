@@ -73,7 +73,7 @@ class DaskPipelineExecutor[T](PipelineExecutor):
     def extract(self, entry: tuple[Path, DocumentEntry]) -> tuple[Path, DocumentEntry]:
         return (entry[0], self.extractor.extract(entry[1]))
 
-    def execute(self, paths: list[Path]) -> T:
+    def execute(self, paths: list[Path]) -> list[tuple[DocumentReference, T]]:
         Client(n_workers=self.n_workers, threads_per_worker=self.threads_per_worker)
         references = db.from_sequence(
             [DocumentReference(path=path, items=[], converted=None) for path in paths], npartitions=self.partitions

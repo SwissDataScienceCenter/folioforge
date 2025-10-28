@@ -75,7 +75,7 @@ def test_markup(parsed_document: DocumentReference):
     result = generator.convert([parsed_document])
     content = result[0]
     assert (
-        content
+        content[1]
         == """Other
 Text
 <image>
@@ -96,7 +96,7 @@ def test_json(parsed_document: DocumentReference):
     generator = JsonGenerator()
     result = generator.convert([parsed_document])
     content = result[0]
-    assert content == (
+    assert content[1] == (
         '{\n  "path": ".",\n  "items": [\n    {\n      "path": ".",\n      "layout": [\n        {\n          "bbox": {\n            '
         '"x0": 0.0,\n            "y0": 0.0,\n            "x1": 1.0,\n            "y1": 1.0\n          },\n          "label": "OTHER",\n'
         '          "confidence": 1.0,\n          "converted": "Other"\n        },\n        {\n          "bbox": {\n            "x0": 1.0,'
@@ -137,7 +137,7 @@ def test_html(parsed_document: DocumentReference):
     generator = HtmlGenerator()
     result = generator.convert([parsed_document])
     content = result[0]
-    assert content == (
+    assert content[1] == (
         "<html><body>\n<p>Other</p>\n\n<p>Text</p>\n\n{image}\n\n<h1>Page Header</h1>\n\n<h2>Section Header</h2>\n"
         "<ul>\n<li>List1</li>\n\n<li>List2</li>\n</ul>\n<table border='0.5'><thead><tr><th>Header1</th><th>Header2"
         "</th></tr></thead><tbody><tr><td colspan=1 rowspan=1>Cell11</td><td colspan=1 rowspan=1>Cell12</td></tr>"
@@ -150,4 +150,4 @@ def test_passthrough(parsed_document: DocumentReference):
     generator = PassthroughGenerator()
     result = generator.convert([parsed_document])
     content = result[0]
-    assert content == "passthrough text"
+    assert content[1] == "passthrough text"

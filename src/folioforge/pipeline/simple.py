@@ -41,7 +41,7 @@ class SimplePipelineExecutor[T](PipelineExecutor):
             outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
         return SimplePipelineExecutor(preprocessors, extractor, format, postprocessors, outdir)
 
-    def execute(self, paths: list[Path]) -> T:
+    def execute(self, paths: list[Path]) -> list[tuple[DocumentReference, T]]:
         references = [DocumentReference(path=path, items=[], converted=None) for path in paths]
 
         for processor in self.preprocessors:

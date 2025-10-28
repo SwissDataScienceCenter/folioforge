@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Protocol, TypeVar
 
 from folioforge.extraction.protocol import Extractor
+from folioforge.models.document import DocumentReference
 from folioforge.output.protocol import OutputGenerator
 from folioforge.postprocessor.protocol import Postprocessor
 from folioforge.preprocessor.protocol import Preprocessor
@@ -20,4 +21,4 @@ class PipelineExecutor[P](Protocol):
         postprocessors: list[Postprocessor] | None = None,
         outdir: Path | None = None,
     ) -> T: ...
-    def execute(self, paths: list[Path]) -> list[P]: ...
+    def execute(self, paths: list[Path]) -> list[tuple[DocumentReference, P]]: ...
