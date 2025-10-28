@@ -15,7 +15,7 @@ class HtmlGenerator(OutputGenerator[str]):
     def to_html(self, document: DocumentReference) -> str:
         output = "<html><body>" if self.full else ""
         for item in document.items:
-            for area in item.layout:
+            for area in sorted(item.layout, key=lambda a: (a.bbox.y0, a.bbox.x0)):
                 output += self.convert_area(area)
         output += "</body></html>" if self.full else ""
         return output

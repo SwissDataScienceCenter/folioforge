@@ -36,7 +36,7 @@ jobs:
       - name: install project
         run: uv sync --locked --all-extras --dev
       - name: check license compatibility
-        run: uv run licensecheck -0 --ignore-packages "nvidia-*"
+        run: uv run licensecheck -0 --ignore-packages nvidia-* --requirements-paths pyproject.toml
       - name: ruff
         run: uv run ruff check
       - name: ty

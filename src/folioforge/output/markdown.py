@@ -13,7 +13,7 @@ class MarkdownGenerator(OutputGenerator[str]):
         result = []
 
         for entry in document.items:
-            for area in entry.layout:
+            for area in sorted(entry.layout, key=lambda a: (a.bbox.y0, a.bbox.x0)):
                 result.append(self.convert_element(area))
             result.append("\n")
 
