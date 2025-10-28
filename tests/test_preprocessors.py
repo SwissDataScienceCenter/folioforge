@@ -5,11 +5,22 @@ from pathlib import Path
 
 from folioforge.models.document import DocumentReference
 from folioforge.preprocessor.image import AutoBrightness, Grayscale, Threshold
-from folioforge.preprocessor.pdf import PDFPreprocessor
+from folioforge.preprocessor.pdf import PDFPreprocessor, PymupdfPreprocessor
 
 
 def test_pdf_preprocessor(pdf_file: Path):
     preprocessor = PDFPreprocessor()
+    outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
+    document = preprocessor.process(DocumentReference(path=pdf_file, items=[], converted=None), outdir)
+    assert document
+    assert document.items
+    assert len(document.items) == 1
+    assert document.items[0].path.name == "page0.png"
+    assert document.items[0].path.parent.name == pdf_file.stem
+
+
+def test_pymupdfpdf_preprocessor(pdf_file: Path):
+    preprocessor = PymupdfPreprocessor()
     outdir = Path(tempfile.mkdtemp(prefix="folioforge"))
     document = preprocessor.process(DocumentReference(path=pdf_file, items=[], converted=None), outdir)
     assert document

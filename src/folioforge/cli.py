@@ -6,8 +6,6 @@ import typer
 
 from folioforge.extraction.docling import DoclingExtractor
 from folioforge.extraction.gemini import GeminiExtractor
-from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLOD4LA, DoclayoutYOLODocLayNet, DoclayoutYOLODocStructBench
-from folioforge.extraction.marker import MarkerPDFExtractor
 from folioforge.extraction.ocr.paddle import PaddleOcrExtractor
 from folioforge.extraction.protocol import Extractor
 from folioforge.extraction.two_phase import TwoPhaseExtractor
@@ -33,6 +31,7 @@ class PipelineTypes(str, Enum):
 
 class PreprocessorTypes(str, Enum):
     pdf = "pdf"
+    pymupdf = "pymupdf"
 
 
 class ExtractorTypes(str, Enum):
@@ -69,6 +68,8 @@ def convert(
     out: Annotated[Path | None, typer.Option(help="output folder, print to stdout if not supplied")] = None,
 ):
     """Convert PDF documents to text."""
+    # optional imports
+
     executor_cls: type[PipelineExecutor]
     match pipeline:
         case PipelineTypes.simple:
@@ -82,6 +83,13 @@ def convert(
             match p:
                 case PreprocessorTypes.pdf:
                     preprocessors.append(PDFPreprocessor())
+                case PreprocessorTypes.pymupdf:
+                    try:
+                        from folioforge.preprocessor.pdf import PymupdfPreprocessor
+                    except ImportError as e:
+                        raise ImportError("pymupdf preprocessor requires 'pymupdf' extra to be installed") from e
+
+                    preprocessors.append(PymupdfPreprocessor())
 
     extractor_cls: type[Extractor]
     extractor_args: dict[str, Any] = {}
@@ -90,18 +98,38 @@ def convert(
             extractor_cls = DoclingExtractor
             extractor_args["min_confidence"] = confidence
         case ExtractorTypes.doclayout_yolo_doclaynet:
+            try:
+                from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLODocLayNet
+            except ImportError as e:
+                raise ImportError("doclayout_yolo_doclaynet extractor requires 'doclayout_yolo' extra to be installed") from e
+
             extractor_cls = TwoPhaseExtractor
             extractor_args["layout_detector"] = DoclayoutYOLODocLayNet(min_confidence=confidence)
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
         case ExtractorTypes.doclayout_yolo_d4la:
+            try:
+                from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLOD4LA
+            except ImportError as e:
+                raise ImportError("doclayout_yolo_dl4a extractor requires 'doclayout_yolo' extra to be installed") from e
+
             extractor_cls = TwoPhaseExtractor
             extractor_args["layout_detector"] = DoclayoutYOLOD4LA(min_confidence=confidence)
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
         case ExtractorTypes.doclayout_yolo_docstructbench:
+            try:
+                from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLODocStructBench
+            except ImportError as e:
+                raise ImportError("doclayout_yolo_docstructbench extractor requires 'doclayout_yolo' extra to be installed") from e
+
             extractor_cls = TwoPhaseExtractor
             extractor_args["layout_detector"] = DoclayoutYOLODocStructBench(min_confidence=confidence)
             extractor_args["ocr_extractor"] = PaddleOcrExtractor()
         case ExtractorTypes.marker:
+            try:
+                from folioforge.extraction.marker import MarkerPDFExtractor
+            except ImportError as e:
+                raise ImportError("marker extractor requires 'marker' extra to be installed") from e
+
             extractor_cls = MarkerPDFExtractor
             extractor_args["min_confidence"] = confidence
         case ExtractorTypes.gemini:
@@ -168,17 +196,41 @@ def evaluate(
             case ExtractorTypes.docling:
                 extractor_cls = DoclingExtractor
             case ExtractorTypes.doclayout_yolo_doclaynet:
+                try:
+                    from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLODocLayNet
+                except ImportError as e:
+                    raise ImportError("doclayout_yolo_doclaynet extractor requires 'doclayout_yolo' extra to be installed") from e
+
                 extractor_cls = TwoPhaseExtractor
                 extractor_args["layout_detector"] = DoclayoutYOLODocLayNet()
                 extractor_args["ocr_extractor"] = PaddleOcrExtractor()
             case ExtractorTypes.doclayout_yolo_d4la:
+                try:
+                    from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLOD4LA
+                except ImportError as e:
+                    raise ImportError("doclayout_yolo_dl4a extractor requires 'doclayout_yolo' extra to be installed") from e
+
                 extractor_cls = TwoPhaseExtractor
                 extractor_args["layout_detector"] = DoclayoutYOLOD4LA()
                 extractor_args["ocr_extractor"] = PaddleOcrExtractor()
             case ExtractorTypes.doclayout_yolo_docstructbench:
+                try:
+                    from folioforge.extraction.layout.doclayout_yolo import DoclayoutYOLODocStructBench
+                except ImportError as e:
+                    raise ImportError("doclayout_yolo_docstructbench extractor requires 'doclayout_yolo' extra to be installed") from e
+
                 extractor_cls = TwoPhaseExtractor
                 extractor_args["layout_detector"] = DoclayoutYOLODocStructBench()
                 extractor_args["ocr_extractor"] = PaddleOcrExtractor()
+            case ExtractorTypes.marker:
+                try:
+                    from folioforge.extraction.marker import MarkerPDFExtractor
+                except ImportError as e:
+                    raise ImportError("marker extractor requires 'marker' extra to be installed") from e
+
+                extractor_cls = MarkerPDFExtractor
+            case ExtractorTypes.gemini:
+                extractor_cls = GeminiExtractor
         executor = SimplePipelineExecutor.setup(
             preprocessors=preprocessors, extractor=extractor_cls(**extractor_args), format=HtmlGenerator(full=False)
         )
